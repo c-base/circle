@@ -13,7 +13,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends',
         'NAME': 'circle.sq3',
         'USER': '',
         'PASSWORD': '',
@@ -186,7 +186,6 @@ LOGGING = {
 }
 
 try:
-    import settings_local
+    from settings_local import *
 except ImportError:
-    settings_local = None
     print "WARNING: No settings_local.py found!"
