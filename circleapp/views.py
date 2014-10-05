@@ -22,9 +22,6 @@ def home(request):
 
 @login_required
 def begin_circle(request):
-    day = timezone.now().day
-    if day != 1 and day != 14:
-        return render_to_response('no_circle_date_error', {})
     return render_to_response('home.django', {})
 
 
