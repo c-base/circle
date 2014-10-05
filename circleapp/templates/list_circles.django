@@ -1,0 +1,24 @@
+{% extends "base.django" %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="col-md-12">
+      <h1 align="center">Circles</h1>
+      <table class="table table-striped table-condensed table-bordered table-hover">
+          <thead>
+            <tr id="tablehead">
+              <th>datum</th>
+            <tr>
+          </thead>
+        {% for circle in circles %}
+          <tr><td><a href="/circle/{{ circle.circle_id }}" class="" style="display:block; text-decoration:none;"><b>{{ circle.circle_id }}</b></a></td></tr>
+        {% empty %}
+          <tr><td><a href="" class="" style="display:block; text-decoration:none;"><b>es sind noch keine circle im archiv verfu:gbar.</b></a></td></tr>
+          <!--<a class="btn btn-block btn-lg btn-default btn-block"><b>es sind noch keine circle im archiv verfu:gbar.</b></a>-->
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+
+{% endblock content%}

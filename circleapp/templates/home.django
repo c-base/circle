@@ -1,0 +1,5 @@
+{% extends "base.django" %}
+
+{% block content %}
+
+{% endblock content%}

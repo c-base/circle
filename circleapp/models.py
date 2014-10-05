@@ -8,13 +8,15 @@ class Member(models.Model):
     groups = models.ManyToManyField(Group, null=True, blank=True)
 
 class Circle(models.Model):
-    circle_date = models.DateTimeField('circle_date')
-    start = models.DateTimeField('start')
-    end = models.DateTimeField('end')
-    circle_member_present = models.ManyToManyField(Member, null=True, blank=True)
-    circle_member_excused = models.ManyToManyField(Member, null=True, blank=True)
-    member_present = models.ManyToManyField(Member, null=True, blank=True)
-    board_present = models.ManyToManyField(Member, null=True, blank=True)
+    circle_id = models.CharField(max_length=10, null=False, unique=True)
+    #circle_date = models.DateTimeField('circle_date')
+    start = models.DateTimeField('start', null=True, blank=True)
+    end = models.DateTimeField('end', null=True, blank=True)
+    circle_member_present = models.ManyToManyField(Member, null=True, blank=True, related_name='circle_member_present')
+    circle_member_excused = models.ManyToManyField(Member, null=True, blank=True, related_name='circle_member_excused')
+    member_present = models.ManyToManyField(Member, null=True, blank=True, related_name='member_present')
+    board_present = models.ManyToManyField(Member, null=True, blank=True, related_name='board_present')
+    aliens = models.TextField()
 
 class Topic(models.Model):
     circle = models.ForeignKey(Circle)

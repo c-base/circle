@@ -19,5 +19,32 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
 
+from jsonrpc import jsonrpc_method
+import json
+
 def home(request):
-    return render_to_response('circle/home.django', {})
+    return render_to_response('home.django', {})
+
+def begin_circle(request):
+    day = timezone.now().day
+    if day != 1 and day != 14:
+        return render_to_response('no_circle_date_error', {})
+    return render_to_response('home.django', {})
+
+def end_circle(request):
+    return render_to_response('home.django', {})
+
+def current_circle(request):
+    return render_to_response('home.django', {})
+
+def list_circles(request):
+    circles = Circle.objects.all().order_by('-circle_id')
+    return render_to_response('list_circles.django', {'circles': circles})
+
+@jsonrpc_method('list_circles')
+def list_circles_rpc(request):
+    return [ circle.circle_id for circle in Circle.objects.all().order_by('-circle_id') ]
+
+
+# nächster circle wird automatisch angelegt, wenn der aktuelle circle beendet wird.
+# alle topics, die keinem circle zugordnet sind, werden automatisch dem neuen circle zugeordnet

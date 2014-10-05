@@ -8,7 +8,7 @@
         background: url("/static/c-base-bootstrap/img/bg.jpg") fixed;
       }
     </style>
-    <title>{% block title %}c-beam{% endblock %}</title>
+    <title>{% block title %}c-base circle app{% endblock %}</title>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -40,47 +40,17 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">c-beam</a>
+        <a class="navbar-brand" href="/">c-base circle app</a>
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
           {% if not user.is_anonymous %}
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">c-info<b class="caret"></b></a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">circle<b class="caret"></b></a>
             <ul class="dropdown-menu">
-              <li><a href="/user/online">an bord</a></li>
-              <li><a href="/events">events</a></li>
-              <li><a href="/artefacts">artefacts</a></li>
-              <li><a href="http://c-portal.c-base.org">c-portal</a></li>
-              <li><a href="/weather">weather</a></li>
-              <li><a href="/bvg">bvg</a></li>
-            </ul>
-          </li>
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">c-ontrol<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="/c_buttons">c-no:pfe</a></li>
-              <li><a href="/c_leuse">c_leuse</a></li>
-              <li><a href="/c_out">c_out</a></li>
-            </ul>
-          </li>
-          <!-- <li><a href="/control">C-ONTROL</a></li> -->
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">c-mission<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="/missions">missionen</a></li>
-              <li><a href="/stats">stats</a></li>
-              <li><a href="/activitylog">activita:t</a></li>
-            </ul>
-          </li>
-          <!--<li><a href="/missions">MISSIONEN</a></li>-->
-          <!--<li><a href="/c_out">C_OUT</a></li>-->
-          <!--<li><a href="/stats">STATS</a></li>-->
-          <!--<li><a href="/activitylog">ACTIVITA:T</a></li>-->
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">c-ocial<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a href="/reddit">reddit</a></li>
+              <li><a href="/circle/start">circle beginnen</a></li>
+              <li><a href="/circle/topics">circle topics</a></li>
+              <li><a href="/circles">vergangene circle</a></li>
             </ul>
           </li>
           <li><a href="/profile">c-profile</a></li>

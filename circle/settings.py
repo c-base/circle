@@ -1,4 +1,5 @@
 # Django settings for circle project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -72,6 +73,8 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    #os.path.join(BASE_DIR, "static"),
+    '/home/smile/circle/static',
 )
 
 # List of finder classes that know how to find static files in
@@ -111,7 +114,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    '/home/smile/circle/circle/templates',
+    '/home/smile/circle/circleapp/templates',
 )
 
 INSTALLED_APPS = (
@@ -122,6 +125,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap3',
+    'south',
+    'circleapp',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
