@@ -1,5 +1,5 @@
 # Django settings for circle project.
-from django_auth_ldap.config import LDAPSearch,GroupOfNamesType
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 import ldap
 
 DEBUG = True
@@ -13,13 +13,12 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'circle.sq3',                      # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'circle.sq3',
         'USER': '',
         'PASSWORD': '',
-        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '',                      # Set to empty string for default.
+        'HOST': '',
+        'PORT': '',
     }
 }
 
@@ -74,8 +73,8 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    #os.path.join(BASE_DIR, "static"),
-    '/home/smile/circle/static',
+    # os.path.join(BASE_DIR, "static"),
+    '',
 )
 
 # List of finder classes that know how to find static files in
@@ -83,7 +82,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -93,7 +92,7 @@ SECRET_KEY = '+6x40s^(7zq=-j@^8c*h$dlwwxyqk1l5^+4(9i-cw!=^mq(%wp'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -125,14 +124,9 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.admin',
     'bootstrap3',
     'south',
-    'jsonrpc',
-    'circleapp',
-    # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
 )
 
 AUTH_LDAP_SERVER_URI = "ldap://lea.cbrp3.c-base.org"
@@ -144,21 +138,21 @@ AUTH_LDAP_CACHE_GROUPS = True
 AUTH_LDAP_GROUP_CACHE_TIMEOUT = 300
 AUTH_LDAP_MIRROR_GROUPS = True
 AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
-                "dc=c-base,dc=org",
-                        ldap.SCOPE_SUBTREE,
-                                "(objectClass=groupOfNames)",
-                                )
+    "dc=c-base,dc=org",
+    ldap.SCOPE_SUBTREE,
+    "(objectClass=groupOfNames)",
+)
 AUTH_LDAP_REQUIRE_GROUP = "cn=crew,ou=groups,dc=c-base,dc=org"
 AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn")
 AUTH_LDAP_USER_FLAGS_BY_GROUP = {
-                "is_member": "cn=crew,ou=groups,dc=c-base,dc=org",
-                        "is_circle_member": "cn=circle,ou=groups,dc=c-base,dc=org",
-                        }
+    "is_member": "cn=crew,ou=groups,dc=c-base,dc=org",
+    "is_circle_member": "cn=circle,ou=groups,dc=c-base,dc=org",
+}
 
 AUTHENTICATION_BACKENDS = (
-                        'django_auth_ldap.backend.LDAPBackend',
-                                        'django.contrib.auth.backends.ModelBackend',
-                                                        )
+    'django_auth_ldap.backend.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 LOGIN_URL = "/login"
 LOGOUT_URL = "/logout"
 
@@ -190,3 +184,9 @@ LOGGING = {
         },
     }
 }
+
+try:
+    import settings_local
+except ImportError:
+    settings_local = None
+    print "WARNING: No settings_local.py found!"
