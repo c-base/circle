@@ -9,6 +9,9 @@ from django.contrib.auth import logout as logout_auth
 from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
+from datetime import datetime
 
 from forms import LoginForm
 
@@ -17,7 +20,7 @@ from jsonrpc import jsonrpc_method
 
 @login_required
 def home(request):
-    return render_to_response('home.django', {})
+    return render_to_response('home.django', {'userlist': get_userlist()})
 
 
 @login_required
@@ -39,12 +42,10 @@ def current_circle(request):
 def show_circle(request, circle_id):
     return render_to_response('home.django', {})
 
-
 @login_required
 def list_circles(request):
     circles = Circle.objects.all().order_by('-circle_id')
-    return render_to_response('list_circles.django', {'circles': circles})
-
+    return render_to_response('list_circles.django', {'circles': circles, 'userlist': get_userlist()}, context_instance=RequestContext(request))
 
 @jsonrpc_method('list_circles')
 def list_circles_rpc(request):
@@ -73,6 +74,19 @@ def auth_logout(request):
     redirect_to = request.REQUEST.get('next', '') or '/'
     logout_auth(request)
     return HttpResponseRedirect(redirect_to)
+
+def get_userlist():
+    # Query all non-expired sessions
+    sessions = Session.objects.filter(expire_date__gte=datetime.now())
+    uid_list = []
+
+    # Build a list of user ids from that query
+    for session in sessions:
+        data = session.get_decoded()
+        uid_list.append(data.get('_auth_user_id', None))
+
+    # Query all logged in users based on id list
+    return User.objects.filter(id__in=uid_list)
 
 
 # nächster circle wird automatisch angelegt, wenn der aktuelle circle beendet wird.
