@@ -35,7 +35,7 @@ def end_circle(request):
 
 @login_required
 def current_circle(request):
-    return render_to_response('home.django', {})
+    return render_to_response('current_circle.django', {})
 
 
 @login_required
@@ -51,6 +51,11 @@ def list_circles(request):
 def list_circles_rpc(request):
     return [circle.circle_id for circle in Circle.objects.all().order_by('-circle_id')]
 
+
+@login_required
+def list_topics(request):
+    topics = Topic.objects.all()#.order_by('-circle_id')
+    return render_to_response('list_topics.django', {'topics': topics, 'userlist': get_userlist()}, context_instance=RequestContext(request))
 
 def auth_login(request):
     redirect_to = request.REQUEST.get('next', '') or '/'

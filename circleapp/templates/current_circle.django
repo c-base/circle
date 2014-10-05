@@ -1,0 +1,92 @@
+{% extends "base.django" %}
+
+{% block content %}
+
+<table>
+  <tr><td colspan="2"><h4>circle vom XXXX-xx-xx</h4></td></tr>
+  <tr>
+    <td>
+      <label for="">circlisten:</label>
+    </td>
+    <td>
+      <div id="circle_list">
+        cketti, ijon, cven, starpeak <button class="btn btn-sm btn-default">+</button>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">member:</label>
+    </td>
+    <td>
+      <div id="member_list">
+        cu, uk, brain <button class="btn btn-sm btn-default">+</button>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">vorstand:</label>
+    </td>
+    <td>
+      <div id="board_list">
+        smile <button class="btn btn-sm btn-default">+</button>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">aliens:</label>
+    </td>
+    <td>
+      <div id="alien_list">
+        bernd, markus, richard <button class="btn btn-sm btn-default">+</button>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">moderator:</label>
+    </td>
+    <td>
+      <div id="moderator">
+        cketti
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">protokoll:</label>
+    </td>
+    <td>
+      <div id="protocol">
+        xen <button class="btn btn-sm btn-default">+</button>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">beginn:</label>
+    </td>
+    <td>
+      <div id="start">
+        -
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">topics:</label>
+    </td>
+    <td>
+      <div id="topics">
+        <ul class="nav nav-sidebar">
+          <li><a href="#">bällebad (jaseg)</a></li>
+          <li><a href="#">euroshizzle (riot)</a></li>
+        </ul>
+      </div>
+    </td>
+  </tr>
+</table>
+
+{% endblock content%}
