@@ -127,7 +127,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'bootstrap3',
     'south',
+    'circle',
+    'circleapp',
 )
+
+AUTH_USER_MODEL = 'circle.Member'
 
 AUTH_LDAP_SERVER_URI = "ldap://lea.cbrp3.c-base.org"
 AUTH_LDAP_USER_DN_TEMPLATE = "uid=%(user)s,ou=crew,dc=c-base,dc=org"
