@@ -20,3 +20,14 @@ class Member(AbstractBaseUser):
         return self.crew_name
 
 
+class Alien(models.Model):
+    first_name = models.CharField(max_length=64, verbose_name='Given-name')
+    last_name = models.CharField(max_length=64, verbose_name='Sir-name', null=True, blank=True)
+    organization = models.CharField(max_length=256, null=True, blank=True)
+    compatibility = models.CharField(max_length=8, choices=ALIEN_COMPATIBILITY_CHOICES, default='dunno')
+
+    def __str__(self):
+        if self.first_name and self.last_name:
+            return "{} {}".format(self.first_name.capitalize(), self.last_name.capitalize())
+        else:
+            return self.first_name.capitalize()
