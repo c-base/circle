@@ -21,7 +21,7 @@
               <li><a href="/circles">vergangene circle</a></li>
             </ul>
           </li>
-          <li><a href="/profile">topic-archiv</a></li>
+          <li><a href="/topics">topic-archiv</a></li>
           <li><a href="/profile">profile</a></li>
           <li><a href="/logout">logout</a></li>
           {% else %}
