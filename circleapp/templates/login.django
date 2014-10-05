@@ -1,0 +1,17 @@
+{% extends 'base.django' %}
+
+{% load bootstrap3 %}
+
+{% block content %}
+
+<form action="/login?next={{redirect_to}}" method="post" class="formi col-md-3">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            Login
+        </button>
+    {% endbuttons %}
+</form>
+
+{% endblock content %}

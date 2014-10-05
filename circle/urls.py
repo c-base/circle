@@ -19,12 +19,15 @@ urlpatterns = patterns('',
     url(r'^circle/(?P<circle_id>\d{4}-\d{2}-\d{2})$', 'circleapp.views.show_circle', name="show_circle"),
     # url(r'^circle/', include('circle.foo.urls')),
 
+    url(r'^login$', 'circleapp.views.auth_login', name='auth_login'),
+    url(r'^logout$', 'circleapp.views.auth_logout', name='auth_logout'),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    #url(r'^rpc/browse/', 'jsonrpc.views.browse', name="jsonrpc_browser"), # for the graphical browser/web console only, omissible
+    url(r'^rpc/browse/', 'jsonrpc.views.browse', name="jsonrpc_browser"), # for the graphical browser/web console only, omissible
     url(r'^rpc/', jsonrpc_site.dispatch, name="jsonrpc_mountpoint"),
     #(r'^rpc/(?P<method>[a-zA-Z0-9.]+)$', jsonrpc_site.dispatch) # for HTTP GET only, also omissible
 
