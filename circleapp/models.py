@@ -199,15 +199,6 @@ class Topic(models.Model):
             md5(self.headline).hexdigest()
         )
 
-    @property
-    def etherpad_link(self):
-        base_url = ETHERPAD_BASE_URL
-        return "{}-{}/topic-{}".format(
-            base_url,
-            self.circle.name,
-            md5(self.headline).hexdigest()
-        )
-
     def clean_circle(self):
         """Validate changes to the circle attribute."""
         old_instance = Topic.objects.get(pk=self.pk)
