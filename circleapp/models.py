@@ -107,18 +107,6 @@ class Circle(models.Model):
             if self.ongoing and len(self.attending_circle_members.all()) < 5:
                 raise ValidationError("At least five circle-members must be attending!")
 
-        if self.attending_board_members != old_instance.attending_board_members:
-
-            if self.closed:
-                raise ValidationError("Can not change attendees after circle has been closed!")
-
-        if self.attending_regular_members != old_instance.attending_regular_members:
-
-            if self.closed:
-                raise ValidationError("Can not change attendees after circle has been closed!")
-
-        if self.attending_aliens != old_instance.attending_aliens:
-
             if self.closed:
                 raise ValidationError("Can not change attendees after circle has been closed!")
 
