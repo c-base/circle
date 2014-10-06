@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^circle/current$', 'circleapp.views.current_circle', name="current_circle"),
     url(r'^circles$', 'circleapp.views.list_circles', name="list_circles"),
     url(r'^circle/(?P<circle_id>\d{4}-\d{2}-\d{2})$', 'circleapp.views.show_circle', name="show_circle"),
+    url(r'^topics$', 'circleapp.views.list_topics', name="list_topics"),
     # url(r'^circle/', include('circle.foo.urls')),
 
     url(r'^login$', 'circleapp.views.auth_login', name='auth_login'),
