@@ -54,14 +54,14 @@ class Circle(models.Model):
     def locked(self):
         return bool(self.opened and self.closed)
 
-    def clean_date(self):
+    def clean_field_date(self):
         """Validate changes to the date attribute."""
         old_instance = Circle.objects.get(pk=self.pk)
         print self.date, old_instance.date
         if self.date != old_instance.date:
             raise ValidationError("Changing the date is not allowed!")
 
-    def clean_opened(self):
+    def clean_field_opened(self):
         """Validate changes to the opened attribute."""
 
         old_instance = Circle.objects.get(pk=self.pk)
@@ -81,7 +81,7 @@ class Circle(models.Model):
 
             # Todo: When at least one topic is present.
 
-    def clean_closed(self):
+    def clean_field_closed(self):
         """Validate changes to the closed attribute."""
 
         old_instance = Circle.objects.get(pk=self.pk)
@@ -95,7 +95,7 @@ class Circle(models.Model):
 
             # Todo: When all topics are closed.
 
-    def clean_attendees(self):
+    def clean_field_attendees(self):
         """Validate changes on the attendee attributes."""
 
         old_instance = Circle.objects.get(pk=self.pk)
@@ -111,7 +111,7 @@ class Circle(models.Model):
             if self.closed:
                 raise ValidationError("Can not change attendees after circle has been closed!")
 
-    def clean_moderator(self):
+    def clean_field_moderator(self):
         """Validate changes to the moderator attribute."""
         old_instance = Circle.objects.get(pk=self.pk)
 
@@ -120,7 +120,7 @@ class Circle(models.Model):
             if not self.upcoming:
                 raise ValidationError("Moderators can only be declared before the circle is formally opened!")
 
-    def clean_transcript_writer(self):
+    def clean_field_transcript_writer(self):
         """Validate changes to the transcript_writer attribute."""
         old_instance = Circle.objects.get(pk=self.pk)
 
@@ -134,19 +134,19 @@ class Circle(models.Model):
             if self.locked:
                 raise ValidationError("Can not change transcripters after circle has been closed!")
 
-    def clean(self):
-        super(Circle, self).clean()
+    def clean_fields(self, exclude=None):
+        super(Circle, self).clean_fields(exclude=exclude)
 
         if self.pk:
-            self.clean_date()
-            self.clean_opened()
-            self.clean_closed()
-            self.clean_attendees()
-            self.clean_moderator()
-            self.clean_transcript_writer()
+            self.clean_field_date()
+            self.clean_field_opened()
+            self.clean_field_closed()
+            self.clean_field_attendees()
+            self.clean_field_moderator()
+            self.clean_field_transcript_writer()
 
     def save(self, *args, **kwargs):
-        self.clean()
+        self.clean_fields()
         return super(Circle, self).save(*args, **kwargs)
 
 
