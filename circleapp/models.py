@@ -57,6 +57,7 @@ class Circle(models.Model):
     def clean_date(self):
         """Validate changes to the date attribute."""
         old_instance = Circle.objects.get(pk=self.pk)
+        print self.date, old_instance.date
         if self.date != old_instance.date:
             raise ValidationError("Changing the date is not allowed!")
 
@@ -121,7 +122,7 @@ class Circle(models.Model):
 
     def clean_transcript_writer(self):
         """Validate changes to the transcript_writer attribute."""
-        old_instance = Circle.objetcs.get(pk=self.pk)
+        old_instance = Circle.objects.get(pk=self.pk)
 
         if self.transcript_writers.all() != old_instance.transcript_writers.all():
 
@@ -143,6 +144,10 @@ class Circle(models.Model):
             self.clean_attendees()
             self.clean_moderator()
             self.clean_transcript_writer()
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        return super(Circle, self).save(*args, **kwargs)
 
 
 class Topic(models.Model):
@@ -268,6 +273,10 @@ class Topic(models.Model):
             if not self.circle.ongoing:
                 raise ValidationError("Can not create topics in circles that aren't currently ongoing!")
 
+    def save(self, *args, **kwargs):
+        self.clean()
+        return super(Topic, self).save(*args, **kwargs)
+
 
 class Voting(models.Model):
     # A voting is always connected to one and only one topic...
@@ -289,6 +298,10 @@ class Voting(models.Model):
 
         if self.topic.locked:
             raise ValidationError("Can not change voting on closed topic!")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        return super(Voting, self).save(*args, **kwargs)
 
 
 class Poll(models.Model):
@@ -315,3 +328,7 @@ class Poll(models.Model):
         if not self.pk:
             if not self.topic.ongoing:
                 raise ValidationError("Can not create poll if topic is not currently open!")
+
+    def save(self, *args, **kwargs):
+        self.clean()
+        return super(Poll, self).save(*args, **kwargs)
