@@ -63,7 +63,6 @@ class Circle(models.Model):
 
     def clean_field_opened(self):
         """Validate changes to the opened attribute."""
-
         old_instance = Circle.objects.get(pk=self.pk)
         if self.opened != old_instance.opened:
 
@@ -83,7 +82,6 @@ class Circle(models.Model):
 
     def clean_field_closed(self):
         """Validate changes to the closed attribute."""
-
         old_instance = Circle.objects.get(pk=self.pk)
         if self.closed != old_instance.closed:
 
@@ -95,11 +93,9 @@ class Circle(models.Model):
 
             # Todo: When all topics are closed.
 
-    def clean_field_attendees(self):
+    def clean_field_attending_circle_members(self):
         """Validate changes on the attendee attributes."""
-
         old_instance = Circle.objects.get(pk=self.pk)
-
         if self.attending_circle_members != old_instance.attending_circle_members:
 
             if self.closed:
@@ -114,7 +110,6 @@ class Circle(models.Model):
     def clean_field_moderator(self):
         """Validate changes to the moderator attribute."""
         old_instance = Circle.objects.get(pk=self.pk)
-
         if self.moderator != old_instance.moderator:
 
             if not self.upcoming:
@@ -123,7 +118,6 @@ class Circle(models.Model):
     def clean_field_transcript_writer(self):
         """Validate changes to the transcript_writer attribute."""
         old_instance = Circle.objects.get(pk=self.pk)
-
         if self.transcript_writers.all() != old_instance.transcript_writers.all():
 
             if self.ongoing:
