@@ -146,7 +146,9 @@ class Circle(models.Model):
         pass
 
     def clean_attending_circle_members(self):
-        pass
+        for member in self.attending_circle_members.all():
+            if not member in self.attending_regular_members.all():
+                raise ValidationError("Attending circle member isn't really attending!")
 
     def clean_moderator(self):
         pass
