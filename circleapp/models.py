@@ -11,14 +11,20 @@ class Circle(models.Model):
         ordering = ['date']
 
     # A circle takes place an a regular date and there is only one meeting on
-    # that date.
+    # that date. The date should not be changeable after creation, hence the
+    # date of a circle never changes post-mortem.
     date = models.DateField(unique=True, db_index=True)
 
-    # A circle is formally opened and closed by timestamp.
+    # A circle is formally opened and closed by timestamp. 'formally', because
+    # there are certain rules that need to be fulfilled to open/close a circle
+    # in order to comply with the protocol.
     opened = models.DateTimeField(null=True, blank=True)
     closed = models.DateTimeField(null=True, blank=True)
 
-    # There are several different kinds of attendees to a circle.
+    # There are several different kinds of attendees to a circle. They are
+    # divided into their individual roles they have during the circle.
+    # These attributes usually won't be given when creating this model, but
+    # will rather be stacked as soon as the circle starts to begin.
     attending_circle_members = models.ManyToManyField(Member, null=True, blank=True,
                                                       related_name='circles_where_circle_member')
     attending_board_members = models.ManyToManyField(Member, null=True, blank=True,
@@ -28,11 +34,18 @@ class Circle(models.Model):
     attending_aliens = models.ManyToManyField(Alien, null=True, blank=True,
                                               related_name='circles_where_alien')
 
-    # Every circle has a designated moderator...
-    moderator = models.ForeignKey(Member, related_name='moderated_circles')
+    # Every circle has a designated moderator. The moderated is informally
+    # elected during the buildup-phase of the circle and must not be present
+    # when creating the model. The moderator's purpose is to moderate the real
+    # people, as well as formally opening/closing the circle.
+    moderator = models.ForeignKey(Member, related_name='moderated_circles', null=True, blank=True)
 
-    # ... and 1-n transcript writers.
-    transcript_writers = models.ManyToManyField(Member, related_name='transcript_circles')
+    # Every circle has at least one transcript writer who is also informally
+    # elected during buildup-phase and must not be present when creating the
+    # model. It's the transcript writer's duty to force the meeting into the
+    # the protocol, opening/closing of topics, writing the voting/poll
+    # texts and maintaining the word-list.
+    transcript_writers = models.ManyToManyField(Member, related_name='transcript_circles', null=True, blank=True)
 
     def __str__(self):
         return "Circle-{}".format(self.date.strftime("%Y-%m-%d"))
