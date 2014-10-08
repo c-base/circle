@@ -69,17 +69,6 @@ class Circle(models.Model):
             if not self.opened:
                 raise ValidationError("Opening a circle is irreversible!")
 
-            if len(self.attending_circle_members.all()) < 5:
-                raise ValidationError("At least five circle-members must be attending!")
-
-            if not self.moderator:
-                raise ValidationError("Can not opened circle before a moderator has been declared!")
-
-            if len(self.transcript_writers.all()) < 1:
-                raise ValidationError("Can not open circle before at least one transcript writer has been declared!")
-
-            # Todo: When at least one topic is present.
-
     def clean_field_closed(self):
         """Validate changes to the closed attribute."""
         old_instance = Circle.objects.get(pk=self.pk)
@@ -90,8 +79,6 @@ class Circle(models.Model):
 
             if not self.opened:
                 raise ValidationError("Can not close circle before opening it!")
-
-            # Todo: When all topics are closed.
 
     def clean_field_attending_circle_members(self):
         """Validate changes on the attendee attributes."""
@@ -140,9 +127,19 @@ class Circle(models.Model):
             self.clean_field_transcript_writer()
 
     def clean_formal_opening(self):
-        pass
+        if len(self.attending_circle_members.all()) < 5:
+            raise ValidationError("At least five circle-members must be attending!")
+
+        if not self.moderator:
+            raise ValidationError("Can not opened circle before a moderator has been declared!")
+
+        if len(self.transcript_writers.all()) < 1:
+            raise ValidationError("Can not open circle before at least one transcript writer has been declared!")
+
+            # Todo: When at least one topic is present.
 
     def clean_formal_closing(self):
+        # Todo: When all topics are closed.
         pass
 
     def clean_attending_circle_members(self):
