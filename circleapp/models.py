@@ -151,7 +151,8 @@ class Circle(models.Model):
                 raise ValidationError("Attending circle member isn't really attending!")
 
     def clean_moderator(self):
-        pass
+        if not self.moderator in self.attending_regular_members.all():
+            raise ValidationError("Attending moderator isn't really attending!")
 
     def clean_transcript_writers(self):
         pass
