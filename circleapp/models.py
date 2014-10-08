@@ -127,6 +127,15 @@ class Circle(models.Model):
             self.clean_field_transcript_writer()
 
     def clean_formal_opening(self):
+        """Validation for readiness for formal opening.
+
+        The circle can only be opened if not at least the following members are
+        attending:
+            - At least five circle-members
+            - Precisely one moderator
+            - At least one transcript writer
+        """
+
         if len(self.attending_circle_members.all()) < 5:
             raise ValidationError("At least five circle-members must be attending!")
 
@@ -139,24 +148,44 @@ class Circle(models.Model):
             # Todo: When at least one topic is present.
 
     def clean_formal_closing(self):
+        """Validation for readiness for formal closing."""
         # Todo: When all topics are closed.
         pass
 
     def clean_attending_circle_members(self):
+        """Validation for attending circle members.
+
+        All attending circle-members must be in the list of attending regular
+        members.
+        """
+
         for member in self.attending_circle_members.all():
             if not member in self.attending_regular_members.all():
                 raise ValidationError("Attending circle member isn't really attending!")
 
     def clean_moderator(self):
+        """Validation for attending moderator.
+
+        The attending moderator must be in the list of attending regular
+        members.
+        """
+
         if not self.moderator in self.attending_regular_members.all():
             raise ValidationError("Attending moderator isn't really attending!")
 
     def clean_transcript_writers(self):
+        """Validation for attending transcript writers.
+
+        All attending transcript writers must be in the list of attending
+        regular members.
+        """
+
         for member in self.transcript_writers.all():
             if not member in self.attending_regular_members.all():
                 raise ValidationError("Attending transcript-writer isn't really attending!")
 
     def clean(self):
+        """Model validation wrapper."""
         if self.pk:
             self.clean_formal_opening()
             self.clean_formal_closing()
@@ -165,10 +194,20 @@ class Circle(models.Model):
             self.clean_transcript_writers()
 
     def save(self, *args, **kwargs):
+        """Overwrite django model.save() method.
+
+        Force model- and field-validation on every save of the model.
+        """
+
         self.clean_fields()
         return super(Circle, self).save(*args, **kwargs)
 
     def delete(self, using=None, force=False):
+        """Overwrite django model.delete() method.
+
+        Give some extra protection from the frickel-nerds.
+        """
+
         if force is True:
             return super(Circle, self).delete(using=using)
 
