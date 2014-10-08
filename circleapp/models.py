@@ -139,6 +139,29 @@ class Circle(models.Model):
             self.clean_field_moderator()
             self.clean_field_transcript_writer()
 
+    def clean_formal_opening(self):
+        pass
+
+    def clean_formal_closing(self):
+        pass
+
+    def clean_attending_circle_members(self):
+        pass
+
+    def clean_moderator(self):
+        pass
+
+    def clean_transcript_writers(self):
+        pass
+
+    def clean(self):
+        if self.pk:
+            self.clean_formal_opening()
+            self.clean_formal_closing()
+            self.clean_attending_circle_members()
+            self.clean_moderator()
+            self.clean_transcript_writers()
+
     def save(self, *args, **kwargs):
         self.clean_fields()
         return super(Circle, self).save(*args, **kwargs)
