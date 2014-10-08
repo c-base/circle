@@ -149,6 +149,10 @@ class Circle(models.Model):
         self.clean_fields()
         return super(Circle, self).save(*args, **kwargs)
 
+    def delete(self, using=None, force=False):
+        if force is True:
+            return super(Circle, self).delete(using=using)
+
 
 class Topic(models.Model):
     class Meta:
@@ -277,6 +281,10 @@ class Topic(models.Model):
         self.clean()
         return super(Topic, self).save(*args, **kwargs)
 
+    def delete(self, using=None, force=False):
+        if force is True:
+            return super(Topic, self).delete(using=using)
+
 
 class Voting(models.Model):
     # A voting is always connected to one and only one topic...
@@ -302,6 +310,10 @@ class Voting(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         return super(Voting, self).save(*args, **kwargs)
+
+    def delete(self, using=None, force=False):
+        if force is True:
+            return super(Voting, self).delete(using=using)
 
 
 class Poll(models.Model):
@@ -332,3 +344,7 @@ class Poll(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         return super(Poll, self).save(*args, **kwargs)
+
+    def delete(self, using=None, force=False):
+        if force is True:
+            return super(Poll, self).delete(using=using)
