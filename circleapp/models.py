@@ -10,14 +10,12 @@ class Circle(models.Model):
     class Meta:
         ordering = ['date']
 
-    # A circle takes place an a regular date and there is only one meeting on
-    # that date. The date should not be changeable after creation, hence the
-    # date of a circle never changes post-mortem.
+    # The circle takes place on a specific date.
+    # There is only one circle on that date
+    # The date of the circle is set when the circle is formally opened.
     date = models.DateField(unique=True, db_index=True)
 
-    # A circle is formally opened and closed by timestamp. 'formally', because
-    # there are certain rules that need to be fulfilled to open/close a circle
-    # in order to comply with the protocol.
+    # A circle is formally opened and closed by timestamp.
     opened = models.DateTimeField(null=True, blank=True)
     closed = models.DateTimeField(null=True, blank=True)
 
