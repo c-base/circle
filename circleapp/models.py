@@ -1,7 +1,8 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.utils import timezone
 from circle.models import Member, Alien
 from hashlib import md5
+import datetime
 
 ETHERPAD_BASE_URL = "https://pad.c-base.org/p/circle"
 
@@ -48,6 +49,20 @@ class Circle(models.Model):
     def __str__(self):
         return "Circle-{}".format(self.date.strftime("%Y-%m-%d"))
 
+    @classmethod
+    def create(cls, *args, **kwargs):
+        """Overwrite model creation.
+
+        When a new circle instance is created, automatically attach all
+        detached topics.
+        """
+        circle = cls(*args, **kwargs)
+        topics = Topic.objects.filter(circle=None)
+        for topic in topics:
+            topic.circle = circle
+            topic.save()
+        return circle
+
     @property
     def name(self):
         return self.date.strftime('%Y-%m-%d')
@@ -65,19 +80,34 @@ class Circle(models.Model):
     def locked(self):
         return bool(self.opened and self.closed)
 
-    @classmethod
-    def create(cls, *args, **kwargs):
-        """Overwrite model creation.
+    def is_clear_for_formal_opening(self):
+        """Return boolean if this circle is clear for formal opening."""
+        if not self.opened:
+            if len(self.attending_circle_members.all()) >= 5:
+                if len(self.transcript_writers.all()) > 0:
+                    if self.moderator:
+                        return True
+        return False
 
-        When a new circle instance is created, automatically attach all
-        detached topics.
-        """
-        circle = cls(*args, **kwargs)
-        topics = Topic.objects.filter(circle=None)
-        for topic in topics:
-            topic.circle = circle
-            topic.save()
-        return circle
+    def is_clean_for_formal_closing(self):
+        if self.opened:
+            if not self.closed:
+                if reduce(lambda x, y: x == y, [bool(t.closed) for t in self.topics.all()]):
+                    return True
+        return False
+
+    def open_circle(self):
+        """Formally open the circle meeting."""
+        timestamp = timezone.now()
+        self.opened = timestamp
+        self.date = timestamp.date()
+        self.save()
+
+    def close_circle(self):
+        """Formally close the circle meeting."""
+        timestamp = timezone.now()
+        self.closed = timestamp
+        self.save()
 
 
 class Topic(models.Model):
