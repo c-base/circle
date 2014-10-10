@@ -80,6 +80,15 @@ class Circle(models.Model):
     def locked(self):
         return bool(self.opened and self.closed)
 
+    @staticmethod
+    def get_or_create_circle():
+        try:
+            circle = Circle.objects.get(date=None)
+        except models.exceptions.ObjectDoesNotExist:
+            circle = Circle()
+            circle.save()
+        return circle
+
     def is_clear_for_formal_opening(self):
         """Return boolean if this circle is clear for formal opening."""
         if not self.opened:
@@ -92,7 +101,7 @@ class Circle(models.Model):
     def is_clean_for_formal_closing(self):
         if self.opened:
             if not self.closed:
-                if reduce(lambda x, y: x == y, [bool(t.closed) for t in self.topics.all()]):
+                if reduce(lambda x, y: x == y, [True, True] + [bool(t.closed) for t in self.topics.all()]):
                     return True
         return False
 
@@ -108,6 +117,7 @@ class Circle(models.Model):
         timestamp = timezone.now()
         self.closed = timestamp
         self.save()
+        return self.get_or_create_circle()
 
 
 class Topic(models.Model):
@@ -133,7 +143,7 @@ class Topic(models.Model):
     # Here we store the URL of the etherpad to this topic.
     # baccenfutter: I choose CharField over URLField, because I was afraid the
     # latter would possible bring limitations we don't want to tackle with.
-    etherpad = models.CharField(max_length=256, editable=False)     # Auto-set during validation.
+    etherpad = models.CharField(max_length=256, editable=False)  # Auto-set during validation.
 
     # A topic is formally opened and closed.
     opened = models.DateTimeField(null=True, blank=True)
