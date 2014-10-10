@@ -70,7 +70,6 @@ class Circle(models.Model):
     def clean_field_date(self):
         """Validate changes to the date attribute."""
         old_instance = Circle.objects.get(pk=self.pk)
-        print self.date, old_instance.date
         if self.date != old_instance.date:
             raise ValidationError("Changing the date is not allowed!")
 
