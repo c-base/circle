@@ -65,6 +65,20 @@ class Circle(models.Model):
     def locked(self):
         return bool(self.opened and self.closed)
 
+    @classmethod
+    def create(cls, *args, **kwargs):
+        """Overwrite model creation.
+
+        When a new circle instance is created, automatically attach all
+        detached topics.
+        """
+        circle = cls(*args, **kwargs)
+        topics = Topic.objects.filter(circle=None)
+        for topic in topics:
+            topic.circle = circle
+            topic.save()
+        return circle
+
 
 class Topic(models.Model):
     class Meta:
