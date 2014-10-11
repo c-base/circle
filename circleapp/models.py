@@ -127,22 +127,22 @@ class Circle(models.Model):
 class Topic(models.Model):
     class Meta:
         unique_together = ['circle', 'headline']
-        ordering = ['order', 'headline']
+        ordering = ['created', 'headline']
 
-    # A topic is always linked to a circle...
-    circle = models.ForeignKey(Circle, related_name='topics')
-
-    # ... an ordering attribute...
-    order = models.IntegerField(default=0)
+    # A topic is linked to a circle unless detached from the current circle...
+    circle = models.ForeignKey(Circle, related_name='topics', null=True, blank=True)
 
     # ... an applicant ...
     applicant = models.CharField(max_length=64)
 
-    # ... and a main headline.
+    # ... a creation timestamp ...
+    created = models.DateTimeField(auto_now_add=True)
+
+    # ... and a headline.
     headline = models.CharField(max_length=128, db_index=True)
 
     # Some topics have a god-father member which we'll call the sponsor.
-    sponsor = models.ForeignKey(Member, related_name='topic_sponsorship')
+    sponsor = models.ForeignKey(Member, related_name='topic_sponsorship', null=True, blank=True)
 
     # Here we store the URL of the etherpad to this topic.
     # baccenfutter: I choose CharField over URLField, because I was afraid the
@@ -153,8 +153,17 @@ class Topic(models.Model):
     opened = models.DateTimeField(null=True, blank=True)
     closed = models.DateTimeField(null=True, blank=True)
 
+    # Each topic also has a unique identifier.
+    uuid = models.CharField(max_length=36, unique=True)
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        topic = cls(*args, **kwargs)
+        topic.uuid = uuid.uuid4()
+        return topic
+
     def __str__(self):
-        return self.headline
+        return str(self.uuid)
 
     @property
     def upcoming(self):
@@ -171,12 +180,12 @@ class Topic(models.Model):
     @property
     def etherpad_link(self):
         """Generate and return the etherpad link to this topic."""
-        base_url = "https://pad.c-base.org/p/"
-        return "{}circle-{}/topic-{}".format(
-            base_url,
-            self.circle.name,
-            md5(self.headline).hexdigest()
-        )
+        base_url = "https://pad.c-base.org/p"
+        return "{}/circle-topic-{}".format(base_url, self.uuid)
+
+    def save(self, *args, **kwargs):
+        self.clean_fields()
+        return super(Topic, self).save(*args, **kwargs)
 
 
 class Voting(models.Model):
