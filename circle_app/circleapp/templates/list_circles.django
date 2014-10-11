@@ -10,7 +10,7 @@
             <tr>
           </thead>
         {% for circle in circles %}
-          <tr><td><a href="/circle/{{ circle.circle_id }}" class="" style="display:block; text-decoration:none;"><b>{{ circle.circle_id }}</b></a></td></tr>
+          <tr><td><a href="/circle/{{ circle.date }}" class="" style="display:block; text-decoration:none;"><b>{{ circle.date }}</b></a></td></tr>
         {% empty %}
           <tr><td><a href="" class="" style="display:block; text-decoration:none;"><b>es sind noch keine circle im archiv verfu:gbar.</b></a></td></tr>
           <!--<a class="btn btn-block btn-lg btn-default btn-block"><b>es sind noch keine circle im archiv verfu:gbar.</b></a>-->
