@@ -69,6 +69,7 @@ class Circle(models.Model):
 
     @property
     def upcoming(self):
+        """Check if this circle is still upcoming."""
         return bool(not self.opened and not self.closed)
 
     @property
@@ -78,10 +79,12 @@ class Circle(models.Model):
 
     @property
     def locked(self):
+        """Check if this circle is closed."""
         return bool(self.opened and self.closed)
 
     @staticmethod
     def get_or_create_circle():
+        """Wrapper for getting or creating a new circle."""
         try:
             circle = Circle.objects.get(date=None)
         except models.exceptions.ObjectDoesNotExist:
@@ -90,7 +93,7 @@ class Circle(models.Model):
         return circle
 
     def is_clear_for_formal_opening(self):
-        """Return boolean if this circle is clear for formal opening."""
+        """Check if this circle is clear for formal opening."""
         if not self.opened:
             if len(self.attending_circle_members.all()) >= 5:
                 if len(self.transcript_writers.all()) > 0:
@@ -99,6 +102,7 @@ class Circle(models.Model):
         return False
 
     def is_clean_for_formal_closing(self):
+        """Check if this circle is clear for formal closing."""
         if self.opened:
             if not self.closed:
                 if reduce(lambda x, y: x == y, [True, True] + [bool(t.closed) for t in self.topics.all()]):
@@ -120,6 +124,10 @@ class Circle(models.Model):
         return self.get_or_create_circle()
 
     def save(self, *args, **kwargs):
+        """Overwrite model save method.
+
+        Field validation is enforced on every save.
+        """
         self.clean_fields()
         return super(Circle, self).save(*args, **kwargs)
 
@@ -157,29 +165,39 @@ class Topic(models.Model):
     uuid = models.CharField(max_length=36, unique=True)
 
     @classmethod
-    def create(cls, *args, **kwargs):
-        topic = cls(*args, **kwargs)
-        topic.uuid = uuid.uuid4()
-        return topic
+    def create(cls, applicant, headline):
+        """Create a new topic.
+
+        :param applicant:   object  - Instance of Member model
+        :param headline:    str     - Subject of topic
+        """
+        return cls(
+            applicant=applicant,
+            headline=headline,
+            uuid=uuid.uuid4(),
+        )
 
     def __str__(self):
         return str(self.uuid)
 
     @property
     def upcoming(self):
+        """Check if this topic is still upcoming."""
         return bool(not self.opened and not self.closed)
 
     @property
     def ongoing(self):
+        """Check if this circle is currently ongoing."""
         return bool(self.opened and not self.closed)
 
     @property
     def locked(self):
+        """Check if this circle has been closed."""
         return bool(self.opened and self.closed)
 
     @property
     def etherpad_link(self):
-        """Generate and return the etherpad link to this topic."""
+        """Return the etherpad link to this topic."""
         base_url = "https://pad.c-base.org/p"
         return "{}/circle-topic-{}".format(base_url, self.uuid)
 
@@ -211,12 +229,17 @@ class Topic(models.Model):
         return self
 
     def close_topic(self):
+        """Formally close this topic."""
         timestamp = timezone.now()
         self.closed = timestamp
         self.save()
         return self
 
     def save(self, *args, **kwargs):
+        """Overwrite model save method.
+
+        Force field validation on every save.
+        """
         self.clean_fields()
         return super(Topic, self).save(*args, **kwargs)
 
