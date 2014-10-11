@@ -14,7 +14,7 @@ class Circle(models.Model):
     # The circle takes place on a specific date.
     # There is only one circle on that date
     # The date of the circle is set when the circle is formally opened.
-    date = models.DateField(unique=True, db_index=True)
+    date = models.DateField(unique=True, db_index=True, null=True, blank=True)
 
     # A circle is formally opened and closed by timestamp.
     opened = models.DateTimeField(null=True, blank=True)
