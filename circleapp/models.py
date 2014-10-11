@@ -183,6 +183,39 @@ class Topic(models.Model):
         base_url = "https://pad.c-base.org/p"
         return "{}/circle-topic-{}".format(base_url, self.uuid)
 
+    @property
+    def is_clear_for_formal_opening(self):
+        """Check if topic is clear for formal opening."""
+        if self.circle and self.circle.ongoing:
+            if not self.opened:
+                if not self.closed:
+                    # This hack basically checks if all other topics are closed.
+                    if not reduce(lambda x, y: x == y, [True, True] + [t.closed for t in self.circle.topics.all()]):
+                        return True
+        return False
+
+    @property
+    def is_clear_for_formal_closing(self):
+        """Check if topic is clear for formal closing."""
+        if self.opened:
+            if not self.closed:
+                if self.voting or self.poll:
+                    return True
+        return False
+
+    def open_topic(self):
+        """Formally open this topic."""
+        timestamp = timezone.now()
+        self.opened = timestamp
+        self.save()
+        return self
+
+    def close_topic(self):
+        timestamp = timezone.now()
+        self.closed = timestamp
+        self.save()
+        return self
+
     def save(self, *args, **kwargs):
         self.clean_fields()
         return super(Topic, self).save(*args, **kwargs)
