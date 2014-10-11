@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
 from circle.models import Member, Alien
-from hashlib import md5
-import datetime
+import uuid
 
 ETHERPAD_BASE_URL = "https://pad.c-base.org/p/circle"
 
@@ -118,6 +118,10 @@ class Circle(models.Model):
         self.closed = timestamp
         self.save()
         return self.get_or_create_circle()
+
+    def save(self, *args, **kwargs):
+        self.clean_fields()
+        return super(Circle, self).save(*args, **kwargs)
 
 
 class Topic(models.Model):
