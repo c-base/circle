@@ -9,6 +9,10 @@ import circleapp.views
 from django.contrib import admin
 admin.autodiscover()
 
+from circleapp.views import CircleViewSet
+
+
+
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'circleapp.views.home', name='home'),
@@ -31,6 +35,12 @@ urlpatterns = patterns('',
     url(r'^rpc/browse/', 'jsonrpc.views.browse', name="jsonrpc_browser"), # for the graphical browser/web console only, omissible
     url(r'^rpc/', jsonrpc_site.dispatch, name="jsonrpc_mountpoint"),
     #(r'^rpc/(?P<method>[a-zA-Z0-9.]+)$', jsonrpc_site.dispatch) # for HTTP GET only, also omissible
+    
+    url(r'^api/v1/circles/$', 'circleapp.views.circle_list', name="api-circle-list"),
+    url(r'^api/v1/circles/(?P<pk>[0-9]+)/$', 'circleapp.views.circle_detail', name="api-circle-detail"),
+    url(r'^api/v1/circles/current/$', 'circleapp.views.current_circle_detail', name="api-circle-current-detail"),
+    
+    
 
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

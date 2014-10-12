@@ -87,7 +87,7 @@ class Circle(models.Model):
         """Wrapper for getting or creating a new circle."""
         try:
             circle = Circle.objects.get(date=None)
-        except models.exceptions.ObjectDoesNotExist:
+        except Circle.DoesNotExist:
             circle = Circle()
             circle.save()
         return circle

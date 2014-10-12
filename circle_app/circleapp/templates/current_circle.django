@@ -2,6 +2,16 @@
 
 {% block content %}
 
+<div ng-app="current_circle">
+	<div ng-view ng-controller="BasicController">
+		<span ng-bind="blafasel"></span>
+		<div ng-repeat="x in eineliste">
+			<span ng-bind="x"></span>
+		</div>
+		<input type="text" ng-model="blafasel" />
+	</div>
+</div>
+
 <table>
   <tr><td colspan="2"><h4>circle vom XXXX-xx-xx</h4></td></tr>
   <tr>
@@ -90,3 +100,7 @@
 </table>
 
 {% endblock content%}
+
+{% block extra_js %}
+<script src="{{ STATIC_URL }}js/current_circle_app.js" type="text/javascript"></script>
+{% endblock extra_js %}

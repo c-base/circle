@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'bootstrap3',
     'south',
+    'rest_framework',
     'circle',
     'circleapp',
 )

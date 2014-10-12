@@ -9,6 +9,8 @@ from django.contrib.auth import logout as logout_auth
 from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import render
+
 #from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
 from datetime import datetime
@@ -16,6 +18,10 @@ from datetime import datetime
 from forms import LoginForm
 
 from jsonrpc import jsonrpc_method
+from rest_framework import viewsets
+
+
+from serializers import CircleSerializer
 
 
 @login_required
@@ -35,7 +41,7 @@ def end_circle(request):
 
 @login_required
 def current_circle(request):
-    return render_to_response('current_circle.django', {})
+    return render(request, 'current_circle.django', {})
 
 
 @login_required
@@ -96,3 +102,47 @@ def get_userlist():
 
 # nächster circle wird automatisch angelegt, wenn der aktuelle circle beendet wird.
 # alle topics, die keinem circle zugordnet sind, werden automatisch dem neuen circle zugeordnet
+
+
+# API views
+class CircleViewSet(viewsets.ModelViewSet):
+    """
+    Viewset for /api/v1/circles/ and /api/v1/circles/:id/
+    """
+    queryset = Circle.objects.all()
+    serializer_class = CircleSerializer
+
+
+circle_list = snippet_list = CircleViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+circle_detail = CircleViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+
+    
+class CurrentCircleViewSet(viewsets.ModelViewSet):
+    """
+    Viewset for api/circles/current/
+    """
+    serializer_class = CircleSerializer
+    
+    def get_object(self, queryset=None):
+        return Circle.get_or_create_circle()
+
+
+current_circle_detail = CurrentCircleViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+    
+})
+
+
+    
