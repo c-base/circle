@@ -27,16 +27,18 @@ The circle-app must provide search-ability wherever it makes sense. It also shou
 inter-connecting topics, such as follow-ups, abolishments, nullifications and others - making such relations easily
 reachable from one another.
 
-## Circle Phasing
+## Life-Cycles
+
+### Circle Phasing
 
 Let's talk about the life-cycle of a circle-event.
 
-### Collection phase
+#### Collection phase
 
 There is always exactly one upcoming circle-event. This event serves as topic collection bin (see: Topic Proposal
 Phase).
 
-### Opening phase
+#### Opening phase
 
 The initial participation-list is created, transcript writers and moderator are selected and the formal list of topics
 is selected. Finally, the circle-meeting is formally opened by the moderator.
@@ -44,12 +46,12 @@ is selected. Finally, the circle-meeting is formally opened by the moderator.
 At this point the date of the circle, as well as the timestamp of the formal opening, are written into the circle-event.
 In the same moment a new upcoming circle-event is initialized as a collection bin for the upcoming meeting.
 
-### Meeting Phase
+#### Meeting Phase
 
 The circle-meeting takes place and goes through all the formally selected topics (see: Topic Phasing for the
 life-cycles of topics).
 
-### Closing phase
+#### Closing phase
 
 The circle eventually reaches the point, where all topics have been discussed.
 
@@ -62,11 +64,11 @@ persistent in the database and unchangeable through the front-end.
 
 There is now no more open circle-event in the database, thus the collection bin now may be formally opened at any time.
 
-## Topic Phasing
+### Topic Phasing
 
 Let's talk about the life-cycle of a topic.
 
-### Proposal Phase
+#### Proposal Phase
 
 Any carbon-unit can propose a topic for the next circle-event and when doing so should receive explicit instructions on
 the further steps to take for pushing the topic towards a formal voting. These instructions should also include the
@@ -81,7 +83,7 @@ possible to filter such subscriptions to only certain categories of topics.
 
 New proposals are linked to the collection bin (see: Circle Collection Phase).
 
-### Selection Phase
+#### Selection Phase
 
 During the opening phase of the circle-event, the topics for the event are formally selected upon. They may be either
 accepted, declined or postponed.
@@ -91,7 +93,7 @@ accepted, declined or postponed.
 * When a proposal is postponed it is closed and an open copy of the proposal is copied over into the topic collection
   bin.
 
-### Discussion Phase
+#### Discussion Phase
 
 The discussion phase starts when the timestamp of the formal opening is written into the topic. There may only exist
 one open topic at any given point in time.
@@ -105,20 +107,20 @@ During a discussion phase a topic may be closed, proposed for voting or proposed
 * When a topic is proposed for voting it goes into voting phase.
 * When a topic is proposed for general poll it goes into poll phase.
 
-### Election Phase
+#### Voting Phase
 
 This phase starts when a transcript writer creates a voting for a topic. The voting and its outcomes should be formally
 and logically correct or explicitly and transparently marked as such.
 
 The successful voting automatically closes the topic.
 
-### Poll Phase
+#### Poll Phase
 
 This phase starts when a transcript writer creates a poll for a topic.
 
 The successful poll automatically closes the topic.
 
-### Closing Phase
+#### Closing Phase
 
 The timestamp of the formal closing is written to the database. This leaves no open topic allowing for another topic to
 be formally opened.
