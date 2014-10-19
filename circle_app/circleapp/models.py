@@ -111,6 +111,9 @@ class Circle(models.Model):
         self.date = timestamp.date()
         self.save()
 
+        # Create a new circle as collection bin for topics.
+        Circle().save()
+
     def close_circle(self):
         """Formally close the circle meeting."""
         timestamp = timezone.now()
