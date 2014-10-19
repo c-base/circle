@@ -143,8 +143,8 @@ class Topic(models.Model):
         unique_together = ['circle', 'headline']
         ordering = ['created', 'headline']
 
-    # A topic is linked to a circle unless detached from the current circle...
-    circle = models.ForeignKey(Circle, related_name='topics', null=True, blank=True)
+    # A topic is linked to a circle...
+    circle = models.ForeignKey(Circle, related_name='topics')
 
     # ... an applicant ...
     applicant = models.CharField(max_length=64)
