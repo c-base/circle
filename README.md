@@ -101,7 +101,7 @@ one open topic at any given point in time.
 During the discussion phase the transcript writers create a written protocol of the discussion. The interface should
 behave like an etherpad text-area.
 
-During a discussion phase a topic may be closed, proposed for voting or proposed for a general poll.
+During discussion phase a topic may be closed, proposed for voting or proposed for a general poll.
 
 * When a topic is closed without voting or poll, it would probably be called info-topic and explicitly mark as such.
 * When a topic is proposed for voting it goes into voting phase.
@@ -110,13 +110,20 @@ During a discussion phase a topic may be closed, proposed for voting or proposed
 #### Voting Phase
 
 This phase starts when a transcript writer creates a voting for a topic. The voting and its outcomes should be formally
-and logically correct or explicitly and transparently marked as such.
+and logically correct or explicitly and transparently marked if otherwise.
+
+Every voting has a formal proposal. The number of votes should sum up to the number of attending circle-members or be
+explicitly and transparently marked if otherwise.
+
+Circle-members can vote for either pro, contra or neutral.
 
 The successful voting automatically closes the topic.
 
 #### Poll Phase
 
 This phase starts when a transcript writer creates a poll for a topic.
+
+Any attending member can participate in a general poll and vote for either pro, contra or neutral.
 
 The successful poll automatically closes the topic.
 
