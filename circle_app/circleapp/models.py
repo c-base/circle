@@ -219,8 +219,7 @@ class Topic(models.Model):
         """Check if topic is clear for formal closing."""
         if self.opened:
             if not self.closed:
-                if self.voting or self.poll:
-                    return True
+                return True
         return False
 
     def open_topic(self, force=False):
