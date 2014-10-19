@@ -111,8 +111,12 @@ class Circle(models.Model):
                     return True
         return False
 
-    def open_circle(self):
+    def open_circle(self, force=False):
         """Formally open the circle meeting."""
+        if force is not True:
+            if not self.is_clear_for_formal_opening:
+                raise ValidationError("Not ready for formal opening!")
+
         timestamp = timezone.now()
         self.opened = timestamp
         self.date = timestamp.date()
