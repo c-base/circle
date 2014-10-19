@@ -259,6 +259,21 @@ class Voting(models.Model):
     def __str__(self):
         return self.proposal
 
+    @classmethod
+    def create(cls, topic, proposal):
+        return cls(
+            topic=topic,
+            proposal=proposal,
+        )
+
+    @property
+    def is_valid(self):
+        total_votes = self.positive + self.negative + self.abstentions
+        if total_votes == len(self.topic.circle.attending_circle_members.all()):
+            return True
+
+        return False
+
 
 class Poll(models.Model):
     # A poll is always connected to one and only one topic...
@@ -277,3 +292,10 @@ class Poll(models.Model):
 
     def __str__(self):
         return self.proposal
+
+    @classmethod
+    def create(cls, topic, proposal):
+        return cls(
+            topic=topic,
+            proposal=proposal,
+        )
