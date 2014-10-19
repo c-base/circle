@@ -9,7 +9,7 @@ Request For Comments
 ## Abstract
 
 The circle-app is a web-application. It's primary focus is to provide a rich tool-set for organizing and running the
-circle-event, as well as generating a written transcripts protocol of circle-events in standardized output formats.
+circle-event, as well as generating written transcript protocols of circle-events in standardized output formats.
 
 The circle-app must help the circle-members organize the circle-event by providing useful and convenient
 tool-chains, while not limiting the circle-members in their decisions how any special edge-case may be handled. Even
