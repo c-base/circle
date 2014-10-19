@@ -158,16 +158,12 @@ class Topic(models.Model):
     # Some topics have a god-father member which we'll call the sponsor.
     sponsor = models.ForeignKey(Member, related_name='topic_sponsorship', null=True, blank=True)
 
-    # Here we store the URL of the etherpad to this topic.
-    # baccenfutter: I choose CharField over URLField, because I was afraid the
-    # latter would possible bring limitations we don't want to tackle with.
-    etherpad = models.CharField(max_length=256, editable=False)  # Auto-set during validation.
-
     # A topic is formally opened and closed.
     opened = models.DateTimeField(null=True, blank=True)
     closed = models.DateTimeField(null=True, blank=True)
 
-    # Each topic also has a unique identifier.
+    # Each topic also has a unique identifier. This comes in handy in several
+    # use-cases, such as the pad-url.
     uuid = models.CharField(max_length=36, unique=True)
 
     @classmethod
