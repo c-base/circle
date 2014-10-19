@@ -101,7 +101,7 @@ class Circle(models.Model):
                         return True
         return False
 
-    def is_clean_for_formal_closing(self):
+    def is_clear_for_formal_closing(self):
         """Check if this circle is clear for formal closing."""
         if self.opened:
             if not self.closed:
