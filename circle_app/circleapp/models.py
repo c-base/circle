@@ -223,15 +223,23 @@ class Topic(models.Model):
                     return True
         return False
 
-    def open_topic(self):
+    def open_topic(self, force=False):
         """Formally open this topic."""
+        if force is not True:
+            if not self.is_clear_for_formal_opening:
+                raise ValidationError("Not ready for formal opening!")
+
         timestamp = timezone.now()
         self.opened = timestamp
         self.save()
         return self
 
-    def close_topic(self):
+    def close_topic(self, force=False):
         """Formally close this topic."""
+        if force is not True:
+            if not self.is_clear_for_formal_closing:
+                raise ValidationError("Not ready for formal closing!")
+
         timestamp = timezone.now()
         self.closed = timestamp
         self.save()
