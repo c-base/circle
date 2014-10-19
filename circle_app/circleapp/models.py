@@ -200,7 +200,7 @@ class Topic(models.Model):
     @property
     def etherpad_link(self):
         """Return the etherpad link to this topic."""
-        base_url = "https://pad.c-base.org/p"
+        base_url = ETHERPAD_BASE_URL
         return "{}/circle-topic-{}".format(base_url, self.uuid)
 
     @property
