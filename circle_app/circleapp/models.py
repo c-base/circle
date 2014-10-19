@@ -92,6 +92,7 @@ class Circle(models.Model):
             circle.save()
         return circle
 
+    @property
     def is_clear_for_formal_opening(self):
         """Check if this circle is clear for formal opening."""
         if not self.opened:
@@ -101,6 +102,7 @@ class Circle(models.Model):
                         return True
         return False
 
+    @property
     def is_clear_for_formal_closing(self):
         """Check if this circle is clear for formal closing."""
         if self.opened:
