@@ -47,21 +47,10 @@ class Circle(models.Model):
     transcript_writers = models.ManyToManyField(Member, related_name='transcript_circles', null=True, blank=True)
 
     def __str__(self):
-        return "Circle-{}".format(self.date.strftime("%Y-%m-%d"))
-
-    @classmethod
-    def create(cls, *args, **kwargs):
-        """Overwrite model creation.
-
-        When a new circle instance is created, automatically attach all
-        detached topics.
-        """
-        circle = cls(*args, **kwargs)
-        topics = Topic.objects.filter(circle=None)
-        for topic in topics:
-            topic.circle = circle
-            topic.save()
-        return circle
+        if self.date:
+            return "Circle-{}".format(self.date.strftime("%Y-%m-%d"))
+        else:
+            return "Upcoming..."
 
     @property
     def name(self):
@@ -173,7 +162,9 @@ class Topic(models.Model):
         :param applicant:   object  - Instance of Member model
         :param headline:    str     - Subject of topic
         """
+        circle = [c for c in Circle.objects.all() if c.upcoming][0]
         return cls(
+            circle=circle,
             applicant=applicant,
             headline=headline,
             uuid=uuid.uuid4(),
