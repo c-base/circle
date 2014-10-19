@@ -165,7 +165,10 @@ class Topic(models.Model):
         :param applicant:   object  - Instance of Member model
         :param headline:    str     - Subject of topic
         """
-        circle = [c for c in Circle.objects.all() if c.upcoming][0]
+        try:
+            circle = [c for c in Circle.objects.all() if c.upcoming][0]
+        except IndexError:
+            raise IndexError("Can not find any upcoming circle-events!")
         return cls(
             circle=circle,
             applicant=applicant,
