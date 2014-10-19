@@ -131,3 +131,16 @@ The successful poll automatically closes the topic.
 
 The timestamp of the formal closing is written to the database. This leaves no open topic allowing for another topic to
 be formally opened.
+
+## Attendance
+
+During the opening phase of a circle-event an attendance-list is compiled. This list splits all attendees into
+categories. There are aliens, members, circle-members, transcript-writers and the moderator.
+
+Once the circle-event has been formally opened the attendance list should be persisted. Attendees showing up after
+formal opening or leaving before formal closing should be stored in two separate lists together with human-readable
+timestamps. If they come and go several times, the two timestamps should range from the first check-in all the way until
+the last check-out.
+
+Un-/Presence should also be transparently marked within the transcript protocol chronology - as in: between what two
+topics, did the change in attendance occur.
