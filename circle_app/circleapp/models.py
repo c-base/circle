@@ -9,7 +9,7 @@ ETHERPAD_BASE_URL = "https://pad.c-base.org/p/circle"
 
 class Circle(models.Model):
     class Meta:
-        ordering = ['date']
+        ordering = ['-date']
 
     # The circle takes place on a specific date.
     # There is only one circle on that date
@@ -130,7 +130,7 @@ class Circle(models.Model):
 class Topic(models.Model):
     class Meta:
         unique_together = ['circle', 'headline']
-        ordering = ['created', 'headline']
+        ordering = ['-created', 'headline']
 
     # A topic is linked to a circle...
     circle = models.ForeignKey(Circle, related_name='topics')
