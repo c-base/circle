@@ -56,9 +56,11 @@ class Circle(models.Model):
 class Participant(models.Model):
     circle = models.ForeignKey(Circle, related_name='participants')
     member = models.ForeignKey(Member, related_name='participations')
+    check_in = models.TimeField(null=True, blank=True)
+    check_out = models.TimeField(null=True, blank=True)
+
+    # Participants may have a special role assigned to them.
     role = models.CharField(max_length=16, choices=CIRCLE_ROLES, null=True, blank=True, default="")
-    check_in = models.DateTimeField(auto_now_add=True)
-    check_out = models.DateTimeField(null=True, blank=True)
 
     def __repr__(self):
         return "{} -> {}".format(self.member.crew_name, self.circle.date or "Upcoming...")
@@ -67,8 +69,8 @@ class Participant(models.Model):
 class Guest(models.Model):
     circle = models.ForeignKey(Circle, related_name='guests')
     alien = models.ForeignKey(Alien, related_name='participations')
-    check_in = models.DateTimeField(auto_now_add=True)
-    check_out = models.DateTimeField(null=True, blank=True)
+    check_in = models.TimeField(null=True, blank=True)
+    check_out = models.TimeField(null=True, blank=True)
 
     def __repr__(self):
         return "{} {} -> {}".format(self.alien.first_name, self.alien.last_name, self.circle.date)
