@@ -10,6 +10,11 @@ CIRCLE_ROLES = (
     ('writer', 'Transcript Writer'),
     ('mod', 'Moderator')
 )
+POLL_OUTCOMES = (
+    (0, 'Negative'),
+    (1, 'Positive'),
+    (2, 'Neutral'),
+)
 
 
 class Circle(models.Model):
@@ -227,12 +232,7 @@ class Poll(models.Model):
     proposal = models.CharField(max_length=1024, db_index=True)
 
     # ... and an outcome.
-    outcome_choices = (
-        (0, 'Neutral'),
-        (1, 'Positive'),
-        (2, 'Negative'),
-    )
-    outcome = models.CharField(max_length=8, choices=outcome_choices)
+    outcome = models.CharField(max_length=8, choices=POLL_OUTCOMES)
 
     def __str__(self):
         return self.proposal
