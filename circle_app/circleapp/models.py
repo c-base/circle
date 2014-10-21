@@ -121,7 +121,7 @@ class Topic(models.Model):
     headline = models.CharField(max_length=128, db_index=True)
 
     # Some topics have a god-father member which we'll call the sponsor.
-    sponsor = models.ForeignKey(Member, related_name='topic_sponsorship', null=True, blank=True)
+    sponsor = models.ForeignKey(Member, related_name='topic_sponsorships', null=True, blank=True)
 
     # A topic is formally opened and closed.
     opened = models.DateTimeField(null=True, blank=True)
