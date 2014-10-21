@@ -187,14 +187,6 @@ class Topic(models.Model):
         self.save()
         return self
 
-    def save(self, *args, **kwargs):
-        """Overwrite model save method.
-
-        Force field validation on every save.
-        """
-        self.clean_fields()
-        return super(Topic, self).save(*args, **kwargs)
-
 
 class Voting(models.Model):
     # A voting is always connected to one and only one topic...
