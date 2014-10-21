@@ -3,10 +3,10 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from circle.models import Member, Alien
 import uuid
+from managers import CircleManager
 
 ETHERPAD_BASE_URL = "https://pad.c-base.org/p/circle"
 CIRCLE_ROLES = (
-    ('participant', 'Participant'),
     ('writer', 'Transcript Writer'),
     ('mod', 'Moderator')
 )
@@ -24,6 +24,8 @@ class Circle(models.Model):
     # A circle is formally opened and closed by timestamp.
     opened = models.DateTimeField(null=True, blank=True)
     closed = models.DateTimeField(null=True, blank=True)
+
+    objects = CircleManager()
 
     def __str__(self):
         if self.date:
@@ -54,19 +56,19 @@ class Circle(models.Model):
 class Participant(models.Model):
     circle = models.ForeignKey(Circle, related_name='participants')
     member = models.ForeignKey(Member, related_name='participations')
-    role = models.CharField(max_length=16, choices=CIRCLE_ROLES, default='participant')
+    role = models.CharField(max_length=16, choices=CIRCLE_ROLES, null=True, blank=True, default="")
     check_in = models.DateTimeField(auto_now_add=True)
-    check_out = models.DateTimeField()
+    check_out = models.DateTimeField(null=True, blank=True)
 
     def __repr__(self):
-        return "{} -> {}".format(self.member.crew_name, self.circle.date)
+        return "{} -> {}".format(self.member.crew_name, self.circle.date or "Upcoming...")
 
 
 class Guest(models.Model):
     circle = models.ForeignKey(Circle, related_name='guests')
     alien = models.ForeignKey(Alien, related_name='participations')
     check_in = models.DateTimeField(auto_now_add=True)
-    check_out = models.DateTimeField()
+    check_out = models.DateTimeField(null=True, blank=True)
 
     def __repr__(self):
         return "{} {} -> {}".format(self.alien.first_name, self.alien.last_name, self.circle.date)
