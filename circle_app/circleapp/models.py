@@ -25,32 +25,6 @@ class Circle(models.Model):
     opened = models.DateTimeField(null=True, blank=True)
     closed = models.DateTimeField(null=True, blank=True)
 
-    # There are several different kinds of attendees to a circle. They are
-    # divided into their individual roles they have during the circle.
-    # These attributes usually won't be given when creating this model, but
-    # will rather be stacked as soon as the circle starts to begin.
-    attending_circle_members = models.ManyToManyField(Member, null=True, blank=True,
-                                                      related_name='circles_where_circle_member')
-    attending_board_members = models.ManyToManyField(Member, null=True, blank=True,
-                                                     related_name='circles_where_board_member')
-    attending_regular_members = models.ManyToManyField(Member, null=True, blank=True,
-                                                       related_name='circles_where_regular_member')
-    attending_aliens = models.ManyToManyField(Alien, null=True, blank=True,
-                                              related_name='circles_where_alien')
-
-    # Every circle has a designated moderator. The moderated is informally
-    # elected during the buildup-phase of the circle and must not be present
-    # when creating the model. The moderator's purpose is to moderate the real
-    # people, as well as formally opening/closing the circle.
-    moderator = models.ForeignKey(Member, related_name='moderated_circles', null=True, blank=True)
-
-    # Every circle has at least one transcript writer who is also informally
-    # elected during buildup-phase and must not be present when creating the
-    # model. It's the transcript writer's duty to force the meeting into the
-    # the protocol, opening/closing of topics, writing the voting/poll
-    # texts and maintaining the word-list.
-    transcript_writers = models.ManyToManyField(Member, related_name='transcript_circles', null=True, blank=True)
-
     def __str__(self):
         if self.date:
             return "Circle-{}".format(self.date.strftime("%Y-%m-%d"))
@@ -72,67 +46,9 @@ class Circle(models.Model):
         return bool(self.opened and not self.closed)
 
     @property
-    def locked(self):
+    def over(self):
         """Check if this circle is closed."""
         return bool(self.opened and self.closed)
-
-    @staticmethod
-    def get_or_create_circle():
-        """Wrapper for getting or creating a new circle."""
-        try:
-            circle = Circle.objects.get(date=None)
-        except Circle.DoesNotExist:
-            circle = Circle()
-            circle.save()
-        return circle
-
-    @property
-    def is_clear_for_formal_opening(self):
-        """Check if this circle is clear for formal opening."""
-        if not self.opened:
-            if len(self.attending_circle_members.all()) >= 5:
-                if len(self.transcript_writers.all()) > 0:
-                    if self.moderator:
-                        return True
-        return False
-
-    @property
-    def is_clear_for_formal_closing(self):
-        """Check if this circle is clear for formal closing."""
-        if self.opened:
-            if not self.closed:
-                if reduce(lambda x, y: x == y, [True, True] + [bool(t.closed) for t in self.topics.all()]):
-                    return True
-        return False
-
-    def open_circle(self, force=False):
-        """Formally open the circle meeting."""
-        if force is not True:
-            if not self.is_clear_for_formal_opening:
-                raise ValidationError("Not ready for formal opening!")
-
-        timestamp = timezone.now()
-        self.opened = timestamp
-        self.date = timestamp.date()
-        self.save()
-
-        # Create a new circle as collection bin for topics.
-        Circle().save()
-
-    def close_circle(self):
-        """Formally close the circle meeting."""
-        timestamp = timezone.now()
-        self.closed = timestamp
-        self.save()
-        return self.get_or_create_circle()
-
-    def save(self, *args, **kwargs):
-        """Overwrite model save method.
-
-        Field validation is enforced on every save.
-        """
-        self.clean_fields()
-        return super(Circle, self).save(*args, **kwargs)
 
 
 class Participant(models.Model):
