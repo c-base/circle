@@ -52,6 +52,33 @@ class Circle(models.Model):
         """Check if this circle is closed."""
         return bool(self.opened and self.closed)
 
+    def open(self):
+        """Formally open the circle session."""
+
+        # There may only be one open circle at any given point in time.
+        if self.objects.ongoing():
+            raise ValidationError("Another circle is currently open!")
+
+        # Set date of circle to today.
+        self.date = timezone.now().date()
+
+        # Set timestamp of formal opening to now.
+        self.opened = timezone.now()
+
+        # Save and create a new topic collection bin.
+        self.save()
+        Circle().save()
+
+    def close(self):
+        """Formally close the circle session."""
+
+        # Check if this is actually an ongoing circle session.
+        if not self.ongoing:
+            raise ValidationError("Circle hasn't been opened!")
+
+        # Set timestamp of formal closing to now.
+        self.closed = timezone.now()
+
 
 class Participant(models.Model):
     circle = models.ForeignKey(Circle, related_name='participants')
