@@ -3,8 +3,18 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from circle.models import Member, Alien
 import uuid
+from managers import CircleManager
 
 ETHERPAD_BASE_URL = "https://pad.c-base.org/p/circle"
+CIRCLE_ROLES = (
+    ('writer', 'Transcript Writer'),
+    ('mod', 'Moderator')
+)
+POLL_OUTCOMES = (
+    (0, 'Negative'),
+    (1, 'Positive'),
+    (2, 'Neutral'),
+)
 
 
 class Circle(models.Model):
@@ -20,31 +30,7 @@ class Circle(models.Model):
     opened = models.DateTimeField(null=True, blank=True)
     closed = models.DateTimeField(null=True, blank=True)
 
-    # There are several different kinds of attendees to a circle. They are
-    # divided into their individual roles they have during the circle.
-    # These attributes usually won't be given when creating this model, but
-    # will rather be stacked as soon as the circle starts to begin.
-    attending_circle_members = models.ManyToManyField(Member, null=True, blank=True,
-                                                      related_name='circles_where_circle_member')
-    attending_board_members = models.ManyToManyField(Member, null=True, blank=True,
-                                                     related_name='circles_where_board_member')
-    attending_regular_members = models.ManyToManyField(Member, null=True, blank=True,
-                                                       related_name='circles_where_regular_member')
-    attending_aliens = models.ManyToManyField(Alien, null=True, blank=True,
-                                              related_name='circles_where_alien')
-
-    # Every circle has a designated moderator. The moderated is informally
-    # elected during the buildup-phase of the circle and must not be present
-    # when creating the model. The moderator's purpose is to moderate the real
-    # people, as well as formally opening/closing the circle.
-    moderator = models.ForeignKey(Member, related_name='moderated_circles', null=True, blank=True)
-
-    # Every circle has at least one transcript writer who is also informally
-    # elected during buildup-phase and must not be present when creating the
-    # model. It's the transcript writer's duty to force the meeting into the
-    # the protocol, opening/closing of topics, writing the voting/poll
-    # texts and maintaining the word-list.
-    transcript_writers = models.ManyToManyField(Member, related_name='transcript_circles', null=True, blank=True)
+    objects = CircleManager()
 
     def __str__(self):
         if self.date:
@@ -67,67 +53,59 @@ class Circle(models.Model):
         return bool(self.opened and not self.closed)
 
     @property
-    def locked(self):
+    def over(self):
         """Check if this circle is closed."""
         return bool(self.opened and self.closed)
 
-    @staticmethod
-    def get_or_create_circle():
-        """Wrapper for getting or creating a new circle."""
-        try:
-            circle = Circle.objects.get(date=None)
-        except Circle.DoesNotExist:
-            circle = Circle()
-            circle.save()
-        return circle
+    def open(self):
+        """Formally open the circle session."""
 
-    @property
-    def is_clear_for_formal_opening(self):
-        """Check if this circle is clear for formal opening."""
-        if not self.opened:
-            if len(self.attending_circle_members.all()) >= 5:
-                if len(self.transcript_writers.all()) > 0:
-                    if self.moderator:
-                        return True
-        return False
+        # There may only be one open circle at any given point in time.
+        if self.objects.ongoing():
+            raise ValidationError("Another circle is currently open!")
 
-    @property
-    def is_clear_for_formal_closing(self):
-        """Check if this circle is clear for formal closing."""
-        if self.opened:
-            if not self.closed:
-                if reduce(lambda x, y: x == y, [True, True] + [bool(t.closed) for t in self.topics.all()]):
-                    return True
-        return False
+        # Set date of circle to today.
+        self.date = timezone.now().date()
 
-    def open_circle(self, force=False):
-        """Formally open the circle meeting."""
-        if force is not True:
-            if not self.is_clear_for_formal_opening:
-                raise ValidationError("Not ready for formal opening!")
+        # Set timestamp of formal opening to now.
+        self.opened = timezone.now()
 
-        timestamp = timezone.now()
-        self.opened = timestamp
-        self.date = timestamp.date()
+        # Save and create a new topic collection bin.
         self.save()
-
-        # Create a new circle as collection bin for topics.
         Circle().save()
 
-    def close_circle(self):
-        """Formally close the circle meeting."""
-        timestamp = timezone.now()
-        self.closed = timestamp
-        self.save()
-        return self.get_or_create_circle()
+    def close(self):
+        """Formally close the circle session."""
 
-    def save(self, *args, **kwargs):
-        """Overwrite model save method.
+        # Check if this is actually an ongoing circle session.
+        if not self.ongoing:
+            raise ValidationError("Circle hasn't been opened!")
 
-        Field validation is enforced on every save.
-        """
-        self.clean_fields()
-        return super(Circle, self).save(*args, **kwargs)
+        # Set timestamp of formal closing to now.
+        self.closed = timezone.now()
+
+
+class Participant(models.Model):
+    circle = models.ForeignKey(Circle, related_name='participants')
+    member = models.ForeignKey(Member, related_name='participations')
+    check_in = models.TimeField(null=True, blank=True)
+    check_out = models.TimeField(null=True, blank=True)
+
+    # Participants may have a special role assigned to them.
+    role = models.CharField(max_length=16, choices=CIRCLE_ROLES, null=True, blank=True, default="")
+
+    def __repr__(self):
+        return "{} -> {}".format(self.member.crew_name, self.circle.date or "Upcoming...")
+
+
+class Guest(models.Model):
+    circle = models.ForeignKey(Circle, related_name='guests')
+    alien = models.ForeignKey(Alien, related_name='participations')
+    check_in = models.TimeField(null=True, blank=True)
+    check_out = models.TimeField(null=True, blank=True)
+
+    def __repr__(self):
+        return "{} {} -> {}".format(self.alien.first_name, self.alien.last_name, self.circle.date)
 
 
 class Topic(models.Model):
@@ -148,7 +126,7 @@ class Topic(models.Model):
     headline = models.CharField(max_length=128, db_index=True)
 
     # Some topics have a god-father member which we'll call the sponsor.
-    sponsor = models.ForeignKey(Member, related_name='topic_sponsorship', null=True, blank=True)
+    sponsor = models.ForeignKey(Member, related_name='topic_sponsorships', null=True, blank=True)
 
     # A topic is formally opened and closed.
     opened = models.DateTimeField(null=True, blank=True)
@@ -200,54 +178,19 @@ class Topic(models.Model):
         base_url = ETHERPAD_BASE_URL
         return "{}/circle-topic-{}".format(base_url, self.uuid)
 
-    @property
-    def is_clear_for_formal_opening(self):
-        """Check if topic is clear for formal opening."""
-        if self.circle and self.circle.ongoing:
-            if not self.opened:
-                if not self.closed:
-                    # This hack basically checks if all other topics are closed.
-                    if not reduce(lambda x, y: x == y, [True, True] + [t.closed for t in self.circle.topics.all()]):
-                        return True
-        return False
-
-    @property
-    def is_clear_for_formal_closing(self):
-        """Check if topic is clear for formal closing."""
-        if self.opened:
-            if not self.closed:
-                return True
-        return False
-
-    def open_topic(self, force=False):
+    def open_topic(self):
         """Formally open this topic."""
-        if force is not True:
-            if not self.is_clear_for_formal_opening:
-                raise ValidationError("Not ready for formal opening!")
-
         timestamp = timezone.now()
         self.opened = timestamp
         self.save()
         return self
 
-    def close_topic(self, force=False):
+    def close_topic(self):
         """Formally close this topic."""
-        if force is not True:
-            if not self.is_clear_for_formal_closing:
-                raise ValidationError("Not ready for formal closing!")
-
         timestamp = timezone.now()
         self.closed = timestamp
         self.save()
         return self
-
-    def save(self, *args, **kwargs):
-        """Overwrite model save method.
-
-        Force field validation on every save.
-        """
-        self.clean_fields()
-        return super(Topic, self).save(*args, **kwargs)
 
 
 class Voting(models.Model):
@@ -289,12 +232,7 @@ class Poll(models.Model):
     proposal = models.CharField(max_length=1024, db_index=True)
 
     # ... and an outcome.
-    outcome_choices = (
-        (0, 'Neutral'),
-        (1, 'Positive'),
-        (2, 'Negative'),
-    )
-    outcome = models.CharField(max_length=8, choices=outcome_choices)
+    outcome = models.CharField(max_length=8, choices=POLL_OUTCOMES)
 
     def __str__(self):
         return self.proposal
