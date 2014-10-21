@@ -5,6 +5,11 @@ from circle.models import Member, Alien
 import uuid
 
 ETHERPAD_BASE_URL = "https://pad.c-base.org/p/circle"
+CIRCLE_ROLES = (
+    ('participant', 'Participant'),
+    ('writer', 'Transcript Writer'),
+    ('mod', 'Moderator')
+)
 
 
 class Circle(models.Model):
@@ -128,6 +133,27 @@ class Circle(models.Model):
         """
         self.clean_fields()
         return super(Circle, self).save(*args, **kwargs)
+
+
+class Participant(models.Model):
+    circle = models.ForeignKey(Circle, related_name='participants')
+    member = models.ForeignKey(Member, related_name='participations')
+    role = models.CharField(max_length=16, choices=CIRCLE_ROLES, default='participant')
+    check_in = models.DateTimeField(auto_now_add=True)
+    check_out = models.DateTimeField()
+
+    def __repr__(self):
+        return "{} -> {}".format(self.member.crew_name, self.circle.date)
+
+
+class Guest(models.Model):
+    circle = models.ForeignKey(Circle, related_name='guests')
+    alien = models.ForeignKey(Alien, related_name='participations')
+    check_in = models.DateTimeField(auto_now_add=True)
+    check_out = models.DateTimeField()
+
+    def __repr__(self):
+        return "{} {} -> {}".format(self.alien.first_name, self.alien.last_name, self.circle.date)
 
 
 class Topic(models.Model):
