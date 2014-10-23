@@ -14,3 +14,18 @@ class CircleManager(models.Manager):
 
     def over(self):
         return [circle for circle in self.get_query_set() if circle.over]
+
+
+class TopicManager(models.Manager):
+    def upcoming(self):
+        for topic in self.get_query_set():
+            if topic.upcoming:
+                return topic
+
+    def ongoing(self):
+        for topic in self.get_query_set():
+            if topic.ongoing:
+                return topic
+
+    def over(self):
+        return [topic for topic in self.get_query_set() if topic.over]

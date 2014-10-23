@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from circle.models import Member, Alien
 import uuid
-from managers import CircleManager
+from managers import CircleManager, TopicManager
 
 ETHERPAD_BASE_URL = "https://pad.c-base.org/p/circle"
 CIRCLE_ROLES = (
@@ -147,6 +147,8 @@ class Topic(models.Model):
     # Each topic also has a unique identifier. This comes in handy in several
     # use-cases, such as the pad-url.
     uuid = models.CharField(max_length=36, unique=True)
+
+    objects = TopicManager()
 
     @classmethod
     def create(cls, applicant, headline):
