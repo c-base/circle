@@ -1,3 +1,15 @@
+"""Dear Front-End Developer
+
+In this module you'll find all models directly regarding the
+circle-session, such as Circle, Topic, Voting, etc.
+
+Also take a look at circleapp.managers for convenience access methods to circle
+instances.
+
+Note: There is always one upcoming circle session. When formally opening this
+      session a new instance will be created on-the-fly to serve as a
+      collection bin for new and postponed topics.
+"""
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
