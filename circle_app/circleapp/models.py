@@ -82,6 +82,8 @@ class Circle(models.Model):
         self.save()
         Circle().save()
 
+        return self
+
     def close(self):
         """Formally close the circle session."""
 
@@ -91,6 +93,8 @@ class Circle(models.Model):
 
         # Set timestamp of formal closing to now.
         self.closed = timezone.now()
+
+        return self
 
 
 class Participant(models.Model):
