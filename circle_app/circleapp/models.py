@@ -103,7 +103,8 @@ class Topic(models.Model):
     circle = models.ForeignKey(Circle, related_name='topics')
 
     # ... an applicant ...
-    applicant = models.CharField(max_length=64)
+    applicant_member = models.ForeignKey(Member, related_name='topic_applications', null=True, blank=True)
+    applicant_alien = models.ForeignKey(Alien, related_name='topic_applications', null=True, blank=True)
 
     # ... a creation timestamp ...
     created = models.DateTimeField(auto_now_add=True)
