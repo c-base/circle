@@ -17,10 +17,15 @@ class CircleManager(models.Manager):
 
 
 class TopicManager(models.Manager):
-    def upcoming(self):
-        for topic in self.get_query_set():
-            if topic.upcoming:
-                return topic
+    def upcoming(self, circle=None):
+        """Return the list of upcoming topics.
+
+        :param circle:  object  - Limit list to topics of this circle instance.
+        """
+        if circle is None:
+            return [topic for topic in self.get_query_set() if topic.upcoming]
+        else:
+            return [topic for topic in self.upcoming(circle=None) if topic.circle == circle]
 
     def ongoing(self):
         for topic in self.get_query_set():
