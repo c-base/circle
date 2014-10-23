@@ -59,41 +59,15 @@ class Circle(models.Model):
 
     def open(self):
         """Formally open the circle session."""
-
-        # Check if circle has already been closed.
-        if self.closed:
-            raise ValidationError("Circle has already been closed!")
-
-        # Check if circle is already open.
-        if self.opened:
-            raise ValidationError("Circle is already open!")
-
-        # There may only be one open circle at any given point in time.
-        if self.objects.ongoing():
-            raise ValidationError("Another circle is currently open!")
-
-        # Set date of circle to today.
         self.date = timezone.now().date()
-
-        # Set timestamp of formal opening to now.
         self.opened = timezone.now()
-
-        # Save and create a new topic collection bin.
         self.save()
         Circle().save()
-
         return self
 
     def close(self):
         """Formally close the circle session."""
-
-        # Check if this is actually an ongoing circle session.
-        if not self.ongoing:
-            raise ValidationError("Circle hasn't been opened!")
-
-        # Set timestamp of formal closing to now.
         self.closed = timezone.now()
-
         return self
 
 
