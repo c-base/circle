@@ -62,7 +62,11 @@ class Circle(models.Model):
         self.date = timezone.now().date()
         self.opened = timezone.now()
         self.save()
-        Circle().save()
+
+        # Create a new instance to serve as collection bin for topics.
+        if not Circle.objects.upcoming():
+            Circle().save()
+
         return self
 
     def close(self):
