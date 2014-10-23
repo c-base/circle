@@ -102,15 +102,18 @@ class Topic(models.Model):
     # A topic is linked to a circle...
     circle = models.ForeignKey(Circle, related_name='topics')
 
-    # ... an applicant ...
+    # ... an applicant...
     applicant_member = models.ForeignKey(Member, related_name='topic_applications', null=True, blank=True)
     applicant_alien = models.ForeignKey(Alien, related_name='topic_applications', null=True, blank=True)
 
-    # ... a creation timestamp ...
+    # ... a creation timestamp...
     created = models.DateTimeField(auto_now_add=True)
 
     # ... and a headline.
     headline = models.CharField(max_length=128, db_index=True)
+
+    # The applicant must provide an e-mail address.
+    email = models.EmailField()
 
     # Some topics have a god-father member which we'll call the sponsor.
     sponsor = models.ForeignKey(Member, related_name='topic_sponsorships', null=True, blank=True)
