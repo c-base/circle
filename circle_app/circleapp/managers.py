@@ -32,5 +32,8 @@ class TopicManager(models.Manager):
             if topic.ongoing:
                 return topic
 
-    def over(self):
-        return [topic for topic in self.get_query_set() if topic.over]
+    def over(self, circle=None):
+        if circle is None:
+            return [topic for topic in self.get_query_set() if topic.over]
+        else:
+            return [topic for topic in self.over(circle=None) if topic.circle == circle]
