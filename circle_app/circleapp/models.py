@@ -17,7 +17,7 @@ from circle.models import Member, Alien
 import uuid
 from managers import CircleManager, TopicManager
 
-ETHERPAD_BASE_URL = "https://pad.c-base.org/p/circle"
+ETHERPAD_BASE_URL = "https://pad.c-base.org/p/"
 CIRCLE_ROLES = (
     ('writer', 'Transcript Writer'),
     ('mod', 'Moderator')
@@ -203,7 +203,7 @@ class Topic(models.Model):
     def etherpad_link(self):
         """Return the etherpad link to this topic."""
         base_url = ETHERPAD_BASE_URL
-        return "{}/circle-topic-{}".format(base_url, self.uuid)
+        return "{}circle-topic-{}".format(base_url, self.uuid)
 
     def open_topic(self):
         """Formally open this topic."""
