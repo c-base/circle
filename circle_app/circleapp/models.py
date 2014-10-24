@@ -201,7 +201,7 @@ class Topic(models.Model):
     etherpad_config = get_etherpad_config()
 
     @classmethod
-    def create(cls, applicant, headline):
+    def create(cls, **kwargs):
         """Create a new topic.
 
         :param applicant:   object  - Instance of Member model
@@ -211,12 +211,13 @@ class Topic(models.Model):
             circle = [c for c in Circle.objects.all() if c.upcoming][0]
         except IndexError:
             raise IndexError("Can not find any upcoming circle-events!")
-        return cls(
+        topic = cls(
             circle=circle,
-            applicant=applicant,
-            headline=headline,
             uuid=uuid.uuid4(),
         )
+        for key, value in kwargs.iteritems():
+            setattr(topic, key, value)
+        return topic
 
     def __str__(self):
         return str(self.uuid)
