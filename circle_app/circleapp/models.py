@@ -198,7 +198,7 @@ class Topic(models.Model):
         return bool(self.opened and not self.closed)
 
     @property
-    def locked(self):
+    def over(self):
         """Check if this circle has been closed."""
         return bool(self.opened and self.closed)
 
