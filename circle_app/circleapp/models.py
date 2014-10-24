@@ -27,6 +27,12 @@ POLL_OUTCOMES = (
     (1, 'Positive'),
     (2, 'Neutral'),
 )
+TOPIC_RELATIONS = (
+    (0, 'related to'),
+    (1, 'follow-up of'),
+    (2, 'blocked by'),
+    (3, 'overrules'),
+)
 
 
 class Circle(models.Model):
@@ -199,6 +205,30 @@ class Topic(models.Model):
         self.closed = timestamp
         self.save()
         return self
+
+
+class TopicRelation(models.Model):
+    class Meta:
+        unique_together = ['topic_from', 'topic_to', 'relation']
+
+    topic_from = models.ForeignKey(Topic, related_name='relation_from')
+    topic_to = models.ForeignKey(Topic, related_name='relation_to')
+    relation = models.IntegerField(choices=TOPIC_RELATIONS, null=True, blank=True)
+
+    def __repr__(self):
+        return "{} -> {}".format(self.topic_from.uuid, self.topic_to.uuid)
+
+    def clean(self):
+        super(TopicRelation, self).clean()
+
+        if self.topic_from == self.topic_to:
+            raise ValidationError("A topic is always related to itself!")
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.full_clean()
+        return super(TopicRelation, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                               update_fields=update_fields)
 
 
 class Voting(models.Model):
