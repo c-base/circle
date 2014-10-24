@@ -77,6 +77,7 @@ class Circle(models.Model):
 
     def open(self):
         """Formally open the circle session."""
+        self.check_in_attendees()
         self.date = timezone.now().date()
         self.opened = timezone.now()
         self.save()
@@ -89,8 +90,23 @@ class Circle(models.Model):
 
     def close(self):
         """Formally close the circle session."""
+        self.check_out_attendees()
         self.closed = timezone.now()
         return self
+
+    def check_in_attendees(self):
+        timestamp = timezone.now()
+
+        for attendee in self.participants.all():
+            attendee.check_in == timestamp
+            attendee.save()
+
+    def check_out_attendees(self):
+        timestamp = timezone.now()
+
+        for attendee in self.participants.all():
+            attendee.check_out == timestamp
+            attendee.save()
 
 
 class Participant(models.Model):
