@@ -24,6 +24,15 @@ class CircleManager(models.Manager):
         """Return a list of all past circle sessions."""
         return [circle for circle in self.get_query_set() if circle.over]
 
+    def current(self):
+        ongoing = self.ongoing()
+        if ongoing:
+            return ongoing
+
+        upcoming = self.upcoming()
+        if upcoming:
+            return upcoming
+
 
 class TopicManager(models.Manager):
     def upcoming(self, circle=None):
