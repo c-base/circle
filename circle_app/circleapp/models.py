@@ -14,8 +14,9 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from circle.models import Member, Alien
-import uuid
 from managers import CircleManager, TopicManager
+import uuid
+import requests
 
 CIRCLE_ROLES = (
     ('writer', 'Transcript Writer'),
@@ -51,9 +52,16 @@ def get_etherpad_config():
         ETHERPAD_BASE_URL = "/"
         print "WARNING: No etherpad base-url defined!"
 
+    try:
+        from circle.settings import ETHERPAD_AUTH
+    except ImportError:
+        ETHERPAD_AUTH = "", ""
+        print "WARNING: No etherpad credentials defined!"
+
     return {
         'etherpad_key': ETHERPAD_API_KEY,
         'etherpad_url': ETHERPAD_BASE_URL,
+        'etherpad_auth': ETHERPAD_AUTH,
     }
 
 
@@ -183,6 +191,10 @@ class Topic(models.Model):
     # use-cases, such as the pad-url.
     uuid = models.CharField(max_length=36, unique=True)
 
+    # When formally closing a topic, the etherpad text is persisted into the
+    # database.
+    transcript_protocol = models.TextField(editable=False, default="", null=True, blank=True)
+
     objects = TopicManager()
 
     # Fetch the etherpad config from settings.
@@ -225,10 +237,33 @@ class Topic(models.Model):
         return bool(self.opened and self.closed)
 
     @property
+    def etherpad_id(self):
+        return "circle-topic-{}".format(self.uuid)
+
+    @property
     def etherpad_link(self):
         """Return the etherpad link to this topic."""
         base_url = self.etherpad_config['etherpad_url']
-        return "{}circle-topic-{}".format(base_url, self.uuid)
+        return "{}/p/{}".format(base_url, self.etherpad_id)
+
+    def etherpad_persist(self):
+        url = "{}/api/1/getText?apikey={}&padID={}".format(
+            self.etherpad_config['etherpad_url'],
+            self.etherpad_config['etherpad_key'],
+            self.etherpad_id,
+        )
+        response = requests.get(url, verify=False, auth=self.etherpad_config['etherpad_auth'])
+
+        from django.core.exceptions import ImproperlyConfigured
+
+        if response.status_code == 401:
+            raise ImproperlyConfigured("Authentication with pad failed!")
+
+        if response.status_code != 200:
+            raise ImproperlyConfigured("Problem with pad: {}".format(response))
+
+        self.transcript_protocol = response.json()['data']['text']
+        self.save()
 
     def open_topic(self):
         """Formally open this topic."""

@@ -193,6 +193,7 @@ LOGGING = {
 
 ETHERPAD_API_KEY = ""
 ETHERPAD_BASE_URL = ""
+ETHERPAD_AUTH = "", ""
 
 try:
     from settings_local import *
