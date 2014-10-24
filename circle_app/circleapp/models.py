@@ -224,6 +224,10 @@ class Topic(models.Model):
         return str(self.uuid)
 
     @property
+    def applicant(self):
+        return self.applicant_member or self.applicant_alien
+
+    @property
     def upcoming(self):
         """Check if this topic is still upcoming."""
         return bool(not self.opened and not self.closed)
