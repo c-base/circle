@@ -17,7 +17,6 @@ from circle.models import Member, Alien
 import uuid
 from managers import CircleManager, TopicManager
 
-ETHERPAD_BASE_URL = "https://pad.c-base.org/p/"
 CIRCLE_ROLES = (
     ('writer', 'Transcript Writer'),
     ('mod', 'Moderator')
@@ -33,6 +32,29 @@ TOPIC_RELATIONS = (
     (2, 'blocked by'),
     (3, 'overrules'),
 )
+
+
+def get_etherpad_config():
+    """Retrieve etherpad configuration.
+
+    :returns: dict      - {etherpad_key: str, etherpad_url: str}
+    """
+    try:
+        from circle.settings import ETHERPAD_API_KEY
+    except ImportError:
+        ETHERPAD_API_KEY = ""
+        print "WARNING: No etherpad API-Key defined!"
+
+    try:
+        from circle.settings import ETHERPAD_BASE_URL
+    except ImportError:
+        ETHERPAD_BASE_URL = "/"
+        print "WARNING: No etherpad base-url defined!"
+
+    return {
+        'etherpad_key': ETHERPAD_API_KEY,
+        'etherpad_url': ETHERPAD_BASE_URL,
+    }
 
 
 class Circle(models.Model):
@@ -163,6 +185,9 @@ class Topic(models.Model):
 
     objects = TopicManager()
 
+    # Fetch the etherpad config from settings.
+    etherpad_config = get_etherpad_config()
+
     @classmethod
     def create(cls, applicant, headline):
         """Create a new topic.
@@ -202,7 +227,7 @@ class Topic(models.Model):
     @property
     def etherpad_link(self):
         """Return the etherpad link to this topic."""
-        base_url = ETHERPAD_BASE_URL
+        base_url = self.etherpad_config['etherpad_url']
         return "{}circle-topic-{}".format(base_url, self.uuid)
 
     def open_topic(self):

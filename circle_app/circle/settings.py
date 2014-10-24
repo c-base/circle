@@ -191,6 +191,9 @@ LOGGING = {
     }
 }
 
+ETHERPAD_API_KEY = ""
+ETHERPAD_BASE_URL = ""
+
 try:
     from settings_local import *
 except ImportError:
