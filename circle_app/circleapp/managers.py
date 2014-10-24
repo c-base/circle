@@ -61,3 +61,15 @@ class TopicManager(models.Manager):
             return [topic for topic in self.get_query_set() if topic.over]
         else:
             return [topic for topic in self.over(circle=None) if topic.circle == circle]
+
+    def formal_order(self, circle):
+        """Alien topics go before member topics."""
+        return [
+            topic for topic in self.get_query_set()
+            if topic.circle == circle
+            and topic.applicant_alien
+        ] + [
+            topic for topic in self.get_query_set()
+            if topic.circle == circle
+            and topic.applicant_member
+        ]
