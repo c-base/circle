@@ -12,7 +12,7 @@ Note: There is always one upcoming circle session. When formally opening this
 """
 from django.db import models
 from django.utils import timezone
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ImproperlyConfigured
 from circle.models import Member, Alien
 from managers import CircleManager, TopicManager
 import uuid
@@ -246,7 +246,42 @@ class Topic(models.Model):
         base_url = self.etherpad_config['etherpad_url']
         return "{}/p/{}".format(base_url, self.etherpad_id)
 
+    def etherpad_create(self):
+        """Make API call to create the pad.
+
+        :raises: ImproperlyConfigured   - If there is a problem communicating
+                                          with the pad.
+        :raises: RuntimeError           - If pad returns a status-code that is
+                                          not zero.
+        """
+        default_text = "Halte dich kurz und knapp und schreibe Markdown."
+        url = "{}/api/1/createPad?apikey={}&padID={}&text={}".format(
+            self.etherpad_config['etherpad_url'],
+            self.etherpad_config['etherpad_key'],
+            self.etherpad_id,
+            default_text,
+            )
+        response = requests.get(url, verify=False, auth=self.etherpad_config['etherpad_auth'])
+
+        if response.status_code == 401:
+            raise ImproperlyConfigured("Authentication with pad failed")
+
+        if response.status_code != 200:
+            raise ImproperlyConfigured("Problem with pad: {}".format(response))
+
+        response_code = response.json()['code']
+
+        if response_code != 0:
+            raise RuntimeError("API request to pad failed: {}".format(response))
+
     def etherpad_persist(self):
+        """Make API call to fetch pad text and write it to the db.
+
+        If the pad doesn't yet exist, it will be created on-the-fly.
+
+        :raises: ImproperlyConfigured   - If there is a problem communicating
+                                          with the pad.
+        """
         url = "{}/api/1/getText?apikey={}&padID={}".format(
             self.etherpad_config['etherpad_url'],
             self.etherpad_config['etherpad_key'],
@@ -254,14 +289,19 @@ class Topic(models.Model):
         )
         response = requests.get(url, verify=False, auth=self.etherpad_config['etherpad_auth'])
 
-        from django.core.exceptions import ImproperlyConfigured
-
         if response.status_code == 401:
             raise ImproperlyConfigured("Authentication with pad failed!")
 
         if response.status_code != 200:
             raise ImproperlyConfigured("Problem with pad: {}".format(response))
 
+        # Create the pad if it doesn't yet exist.
+        response_code = response.json()['code']
+        if response_code == 1:
+            self.etherpad_create()
+            return self.etherpad_persist()
+
+        # Persist pad text to database.
         self.transcript_protocol = response.json()['data']['text']
         self.save()
 
