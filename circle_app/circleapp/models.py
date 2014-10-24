@@ -165,7 +165,7 @@ class Guest(models.Model):
 class Topic(models.Model):
     class Meta:
         unique_together = ['circle', 'headline']
-        ordering = ['-created', 'headline']
+        ordering = ['created', 'headline']
 
     # A topic is linked to a circle...
     circle = models.ForeignKey(Circle, related_name='topics')
