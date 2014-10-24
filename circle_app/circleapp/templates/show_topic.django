@@ -1,0 +1,53 @@
+{% extends "base.django" %}
+
+{% block content %}
+
+<table>
+  <tr><td colspan="2"><h4>{{ topic.headline }}</h4></td></tr>
+  <tr>
+    <td>
+      <label for="">antragsteller:</label>
+    </td>
+    <td>
+      <div id="applicant">{{ topic.applicant }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">erstellungsdatum:</label>
+    </td>
+    <td>
+      <div id="created">{{ topic.created|date:"Y-m-d H:i" }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">eröffnet:</label>
+    </td>
+    <td>
+      <div id="opened">{{ topic.opened|date:"Y-m-d H:i" }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">geschlossen:</label>
+    </td>
+    <td>
+      <div id="closed">{{ topic.closed|date:"Y-m-d H:i" }}</div>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <label for="">zusammenfassung:</label>
+    </td>
+    <td>
+      <div id="transcript_protocol"><pre>{{ topic.transcript_protocol}}</pre></div>
+    </td>
+  </tr>
+</table>
+
+{% endblock content%}
+
+{% block extra_js %}
+<script src="{{ STATIC_URL }}js/current_circle_app.js" type="text/javascript"></script>
+{% endblock extra_js %}

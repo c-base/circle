@@ -12,6 +12,11 @@
 	</div>
 </div>
 
+
+
+
+
+
 <table>
   <tr><td colspan="2"><h4>circle vom XXXX-xx-xx</h4></td></tr>
   <tr>
@@ -88,12 +93,31 @@
     <td>
       <label for="">topics:</label>
     </td>
-    <td>
+    <td class="col-md-11">
       <div id="topics">
-        <ul class="nav nav-sidebar">
-          <li><a href="#">bällebad (jaseg)</a></li>
-          <li><a href="#">euroshizzle (riot)</a></li>
-        </ul>
+        {% for topic in circle.topics.all %}
+          <div id="accordion" class="panel-group">
+              <div class="panel panel-default">
+                  <a class="btn btn-lg btn-default btn-block" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">{{ topic.headline }}</a>
+                  <div id="collapseOne" class="panel-collapse collapse">
+                      <div class="panel-body">
+                         <table>
+                             <tr><td>antragsteller:</td><td>{{ topic.applicant }}</td></tr>
+                             <tr><td>eingereicht am:</td><td>{{ topic.created|date:"Y-m-d H:i" }}</td></tr>
+                             <tr><td>pate:</td><td>{{ topic.sponsor }}</td></tr>
+                             <tr><td colspan="2"><a href="{{ topic.etherpad_link }}" target="_blank">link zum protokoll</a></td></tr>
+                         </table>
+                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/open">eröffnen</a>
+                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/close">schließen</a>
+                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/poll">meinungsbild</a>
+                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/voting">abstimmung</a>
+                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/postpone">verschieben</a>
+                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/delete">löschen</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        {% endfor %}
       </div>
     </td>
   </tr>

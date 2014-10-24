@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     url(r'^circles$', 'circleapp.views.list_circles', name="list_circles"),
     url(r'^circle/(?P<circle_id>\d{4}-\d{2}-\d{2})$', 'circleapp.views.show_circle', name="show_circle"),
     url(r'^topics$', 'circleapp.views.list_topics', name="list_topics"),
+    url(r'^topic/(?P<topic_uuid>.*)/pad$', 'circleapp.views.topic_pad', name="topic_pad"),
+    url(r'^topic/(?P<topic_uuid>.*)$', 'circleapp.views.show_topic', name="show_topic"),
     # url(r'^circle/', include('circle.foo.urls')),
 
     url(r'^login$', 'circleapp.views.auth_login', name='auth_login'),

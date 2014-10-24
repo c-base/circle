@@ -17,14 +17,14 @@
             <tr id="tablehead">
               <th>topic</th>
               <th>datum</th>
-              <th>categorie</th>
+              <th>antragsteller</th>
             <tr>
           </thead>
         {% for topic in topics %}
           <tr>
-            <td><a href="/topic/{{ topic.topic_id }}" class="" style="display:block; text-decoration:none;"><b>{{ topic.subject }}</b></a></td>
-            <td><a href="/topic/{{ topic.topic_id }}" class="" style="display:block; text-decoration:none;"><b>{{ topic.timestamp }}</b></a></td>
-            <td><a href="/topic/{{ topic.topic_id }}" class="" style="display:block; text-decoration:none;"><b>{{ topic.category }}</b></a></td>
+            <td><a href="/topic/{{ topic.uuid }}" class="" style="display:block; text-decoration:none;"><b>{{ topic.headline }}</b></a></td>
+            <td><a href="/topic/{{ topic.uuid }}" class="" style="display:block; text-decoration:none;"><b>{{ topic.created|date:"Y-m-d H:i" }}</b></a></td>
+            <td><a href="/topic/{{ topic.uuid }}" class="" style="display:block; text-decoration:none;"><b>{{ topic.applicant }}</b></a></td>
           </tr>
         {% empty %}
           <tr><td colspan="3"><a href="" class="" style="display:block; text-decoration:none;"><b>es sind noch keine topics im archiv verfu:gbar.</b></a></td></tr>

@@ -41,7 +41,8 @@ def end_circle(request):
 
 @login_required
 def current_circle(request):
-    return render(request, 'current_circle.django', {})
+    circle = Circle.objects.current()
+    return render(request, 'current_circle.django', {'circle': circle})
 
 
 @login_required
@@ -57,11 +58,19 @@ def list_circles(request):
 def list_circles_rpc(request):
     return [circle.date for circle in Circle.objects.all().order_by('-date')]
 
-
 @login_required
 def list_topics(request):
     topics = Topic.objects.all()#.order_by('-circle_id')
+    print topics
     return render_to_response('list_topics.django', {'topics': topics, 'userlist': get_userlist()}, context_instance=RequestContext(request))
+
+@login_required
+def show_topic(request, topic_uuid):
+    return render(request, 'show_topic.django', {'topic': Topic.objects.get(uuid=topic_uuid)})
+
+@login_required
+def topic_pad(request, topic_uuid):
+    return HttpResponseRedirect(Topic.objects.get(uuid=topic_uuid).etherpad_link)
 
 def auth_login(request):
     redirect_to = request.REQUEST.get('next', '') or '/'
@@ -125,15 +134,15 @@ circle_detail = CircleViewSet.as_view({
     'delete': 'destroy'
 })
 
-    
+
 class CurrentCircleViewSet(viewsets.ModelViewSet):
     """
     Viewset for api/circles/current/
     """
     serializer_class = CircleSerializer
-    
+
     def get_object(self, queryset=None):
-        return Circle.get_or_create_circle()
+        return Circle.objects.current()
 
 
 current_circle_detail = CurrentCircleViewSet.as_view({
@@ -141,8 +150,6 @@ current_circle_detail = CurrentCircleViewSet.as_view({
     'put': 'update',
     'patch': 'partial_update',
     'delete': 'destroy'
-    
 })
 
 
-    
