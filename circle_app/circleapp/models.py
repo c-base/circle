@@ -150,9 +150,6 @@ class Topic(models.Model):
     # ... and a headline.
     headline = models.CharField(max_length=128, db_index=True)
 
-    # The applicant must provide an e-mail address.
-    email = models.EmailField()
-
     # Some topics have a god-father member which we'll call the sponsor.
     sponsor = models.ForeignKey(Member, related_name='topic_sponsorships', null=True, blank=True)
 

@@ -12,7 +12,7 @@ class Member(AbstractBaseUser):
     crew_name = models.CharField(max_length=256, unique=True, db_index=True)
     first_name = models.CharField(max_length=64, blank=True)
     last_name = models.CharField(max_length=64, blank=True)
-    email = models.EmailField(blank=True, db_index=True)
+    email = models.EmailField(blank=True, db_index=True, unique=True)
 
     USERNAME_FIELD = 'crew_name'
 
@@ -25,6 +25,7 @@ class Alien(models.Model):
     last_name = models.CharField(max_length=64, verbose_name='Sir-name', null=True, blank=True)
     organization = models.CharField(max_length=256, null=True, blank=True)
     compatibility = models.CharField(max_length=8, choices=ALIEN_COMPATIBILITY_CHOICES, default='dunno')
+    email = models.EmailField(blank=True, db_index=True, unique=True)
 
     def __str__(self):
         if self.first_name and self.last_name:
