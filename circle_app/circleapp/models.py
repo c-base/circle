@@ -189,7 +189,7 @@ class Topic(models.Model):
 
     # Each topic also has a unique identifier. This comes in handy in several
     # use-cases, such as the pad-url.
-    uuid = models.CharField(max_length=36, unique=True)
+    uuid = models.CharField(max_length=36, unique=True, db_index=True)
 
     # When formally closing a topic, the etherpad text is persisted into the
     # database.
