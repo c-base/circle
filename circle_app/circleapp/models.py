@@ -14,7 +14,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from circle.models import Member, Alien
-from managers import CircleManager, TopicManager
+from managers import CircleManager, TopicManager, ParticipantManager
 import uuid
 import requests
 
@@ -147,6 +147,8 @@ class Participant(models.Model):
 
     # Participants may have a special role assigned to them.
     role = models.CharField(max_length=16, choices=CIRCLE_ROLES, null=True, blank=True, default="")
+
+    objects = ParticipantManager()
 
     def __repr__(self):
         return "{} -> {}".format(self.member.crew_name, self.circle.date or "Upcoming...")

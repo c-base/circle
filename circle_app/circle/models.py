@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, Group
 from django.db import models
 
 ALIEN_COMPATIBILITY_CHOICES = (
@@ -13,11 +13,27 @@ class Member(AbstractBaseUser):
     first_name = models.CharField(max_length=64, blank=True)
     last_name = models.CharField(max_length=64, blank=True)
     email = models.EmailField(blank=True, db_index=True, unique=True)
+    groups = models.ManyToManyField(Group, related_name='members', null=True, blank=True)
 
     USERNAME_FIELD = 'crew_name'
 
     def __str__(self):
         return self.crew_name
+
+    def member_of_group(self, group_name):
+        try:
+            group = Group.objects.get(name=group_name)
+            return group in self.groups.all()
+        except Group.DoesNotExist:
+            return False
+
+    @property
+    def is_circle_member(self):
+        return self.member_of_group('circle')
+
+    @property
+    def is_board_member(self):
+        return self.member_of_group('vorstand')
 
 
 class Alien(models.Model):
