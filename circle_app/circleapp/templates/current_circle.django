@@ -95,16 +95,25 @@
     </td>
     <td class="col-md-11">
       <div id="topics">
-        {% for topic in circle.topics.all %}
-          <div id="accordion" class="panel-group">
+        <div id="accordion" class="panel-group">
+          {% for topic in circle.topics.all %}
               <div class="panel panel-default">
-                  <a class="btn btn-lg btn-default btn-block" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">{{ topic.headline }}</a>
-                  <div id="collapseOne" class="panel-collapse collapse">
-                      <div class="panel-body">
+                  <a class="btn btn-lg btn-default btn-block" data-toggle="collapse" data-parent="#accordion" href="#{{ topic.uuid }}">{{ topic.headline }}</a>
+                  <div id="{{ topic.uuid }}" class="panel-collapse collapse">
+                      <div class="terminal">
                          <table>
                              <tr><td>antragsteller:</td><td>{{ topic.applicant }}</td></tr>
                              <tr><td>eingereicht am:</td><td>{{ topic.created|date:"Y-m-d H:i" }}</td></tr>
-                             <tr><td>pate:</td><td>{{ topic.sponsor }}</td></tr>
+                             <tr>
+                               <td>pate:</td>
+                               <td>
+                                 {% if topic.sponsor %}
+                                   {{ topic.sponsor }}
+                                 {% else %}
+                                   <a href="#" class="btn btn-sm btn-default">auswählen</a>
+                                 {% endif %}
+                               </td>
+                             </tr>
                              <tr><td colspan="2"><a href="{{ topic.etherpad_link }}" target="_blank">link zum protokoll</a></td></tr>
                          </table>
                          <a class="btn btn-default" href="/topic/{{ topic.uuid }}/open">eröffnen</a>
@@ -116,8 +125,8 @@
                       </div>
                   </div>
               </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     </td>
   </tr>
