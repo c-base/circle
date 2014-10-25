@@ -125,3 +125,9 @@ class ParticipantManager(models.Manager):
             if participation.circle == circle:
                 if participation.role == 'mod':
                     return participation
+
+
+class GuestManager(models.Manager):
+    def attendees(self, circle):
+        """Return all attending aliens of a circle session."""
+        return [guest.alien for guest in self.get_query_set() if guest.circle == circle]

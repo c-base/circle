@@ -14,7 +14,7 @@ from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from circle.models import Member, Alien
-from managers import CircleManager, TopicManager, ParticipantManager
+from managers import CircleManager, TopicManager, ParticipantManager, GuestManager
 import uuid
 import requests
 
@@ -159,6 +159,8 @@ class Guest(models.Model):
     alien = models.ForeignKey(Alien, related_name='participations')
     check_in = models.TimeField(null=True, blank=True)
     check_out = models.TimeField(null=True, blank=True)
+
+    objects = GuestManager()
 
     def __repr__(self):
         return "{} {} -> {}".format(self.alien.first_name, self.alien.last_name, self.circle.date)
