@@ -76,51 +76,60 @@ class TopicManager(models.Manager):
 
 
 class ParticipantManager(models.Manager):
-    def participants(self, circle):
+    def _get_current_circle(self):
+        from circleapp.models import Circle
+        return Circle.objects.current()
+
+    def participants(self, circle=None):
         """Return all participants of a circle session.
 
         :returns: list      - List of Member() instances.
         """
+        circle = circle or self._get_current_circle()
         return [participation.member for participation in self.get_query_set() if participation.circle == circle]
 
-    def circle_members(self, circle):
+    def circle_members(self, circle=None):
         """Return all participating circle-members of a circle session.
 
         :returns: list      - List of Member() instances.
         """
+        circle = circle or self._get_current_circle()
         return [
             participation.member for participation in self.get_query_set()
             if participation.circle == circle
             and participation.member.is_circle_member
         ]
 
-    def board_members(self, circle):
+    def board_members(self, circle=None):
         """Return all board-members of a circle session.
 
         :returns: list      - List of Member() instances.
         """
+        circle = circle or self._get_current_circle()
         return [
             participation.member for participation in self.get_query_set()
             if participation.circle == circle
             and participation.member.is_board_member
         ]
 
-    def transcript_writers(self, circle):
+    def transcript_writers(self, circle=None):
         """Return all transcript writers of a circle session.
 
         :returns: list      - List of Member() instances.
         """
+        circle = circle or self._get_current_circle()
         return [
             participation.member for participation in self.get_query_set()
             if participation.circle == circle
             and participation.role == 'writer'
         ]
 
-    def moderator(self, circle):
+    def moderator(self, circle=None):
         """Return moderator of a circle session.
 
         :returns: object    - Instance of Member()
         """
+        circle = circle or self._get_current_circle()
         for participation in self.get_query_set():
             if participation.circle == circle:
                 if participation.role == 'mod':
