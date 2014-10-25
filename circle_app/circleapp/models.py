@@ -13,8 +13,8 @@ Note: There is always one upcoming circle session. When formally opening this
 from django.db import models
 from django.utils import timezone
 from django.core.exceptions import ValidationError, ImproperlyConfigured
-from circle.models import Member, Alien
-from managers import CircleManager, TopicManager, ParticipantManager, GuestManager
+from django.contrib.auth.models import User
+from managers import CircleManager, TopicManager, ParticipantManager
 import uuid
 import requests
 
@@ -141,7 +141,7 @@ class Circle(models.Model):
 
 class Participant(models.Model):
     circle = models.ForeignKey(Circle, related_name='participants')
-    member = models.ForeignKey(Member, related_name='participations')
+    member = models.ForeignKey(User, related_name='participations')
     check_in = models.TimeField(null=True, blank=True)
     check_out = models.TimeField(null=True, blank=True)
 
@@ -151,19 +151,7 @@ class Participant(models.Model):
     objects = ParticipantManager()
 
     def __repr__(self):
-        return "{} -> {}".format(self.member.crew_name, self.circle.date or "Upcoming...")
-
-
-class Guest(models.Model):
-    circle = models.ForeignKey(Circle, related_name='guests')
-    alien = models.ForeignKey(Alien, related_name='participations')
-    check_in = models.TimeField(null=True, blank=True)
-    check_out = models.TimeField(null=True, blank=True)
-
-    objects = GuestManager()
-
-    def __repr__(self):
-        return "{} {} -> {}".format(self.alien.first_name, self.alien.last_name, self.circle.date)
+        return "{} -> {}".format(self.member.username, self.circle.date or "Upcoming...")
 
 
 class Topic(models.Model):
@@ -175,8 +163,7 @@ class Topic(models.Model):
     circle = models.ForeignKey(Circle, related_name='topics')
 
     # ... an applicant...
-    applicant_member = models.ForeignKey(Member, related_name='topic_applications', null=True, blank=True)
-    applicant_alien = models.ForeignKey(Alien, related_name='topic_applications', null=True, blank=True)
+    applicant = models.ForeignKey(User, related_name='topic_applications', null=True, blank=True)
 
     # ... a creation timestamp...
     created = models.DateTimeField(auto_now_add=True)
@@ -188,7 +175,7 @@ class Topic(models.Model):
     summary = models.TextField()
 
     # Some topics have a god-father member which we'll call the sponsor.
-    sponsor = models.ForeignKey(Member, related_name='topic_sponsorships', null=True, blank=True)
+    sponsor = models.ForeignKey(User, related_name='topic_sponsorships', null=True, blank=True)
 
     # A topic is formally opened and closed.
     opened = models.DateTimeField(null=True, blank=True)
@@ -229,10 +216,6 @@ class Topic(models.Model):
 
     def __str__(self):
         return str(self.uuid)
-
-    @property
-    def applicant(self):
-        return self.applicant_member or self.applicant_alien
 
     @property
     def upcoming(self):

@@ -80,7 +80,7 @@ class ParticipantManager(models.Manager):
         from circleapp.models import Circle
         return Circle.objects.current()
 
-    def participants(self, circle=None):
+    def list(self, circle=None):
         """Return all participants of a circle session.
 
         :returns: list      - List of Member() instances.
@@ -134,9 +134,3 @@ class ParticipantManager(models.Manager):
             if participation.circle == circle:
                 if participation.role == 'mod':
                     return participation
-
-
-class GuestManager(models.Manager):
-    def attendees(self, circle):
-        """Return all attending aliens of a circle session."""
-        return [guest.alien for guest in self.get_query_set() if guest.circle == circle]
