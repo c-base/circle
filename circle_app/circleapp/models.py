@@ -172,16 +172,14 @@ class Topic(models.Model):
         ordering = ['created', 'headline']
 
     # A topic is linked to a circle...
-    circle = models.ForeignKey(Circle, related_name='topics', editable=False)
+    circle = models.ForeignKey(Circle, related_name='topics')
 
     # ... an applicant...
-    applicant_member = models.ForeignKey(Member, related_name='topic_applications', null=True, blank=True,
-                                         editable=False)
-    applicant_alien = models.ForeignKey(Alien, related_name='topic_applications', null=True, blank=True,
-                                        editable=False)
+    applicant_member = models.ForeignKey(Member, related_name='topic_applications', null=True, blank=True)
+    applicant_alien = models.ForeignKey(Alien, related_name='topic_applications', null=True, blank=True)
 
     # ... a creation timestamp...
-    created = models.DateTimeField(auto_now_add=True, editable=False)
+    created = models.DateTimeField(auto_now_add=True)
 
     # ... and a headline...
     headline = models.CharField(max_length=128, db_index=True)
@@ -193,12 +191,12 @@ class Topic(models.Model):
     sponsor = models.ForeignKey(Member, related_name='topic_sponsorships', null=True, blank=True)
 
     # A topic is formally opened and closed.
-    opened = models.DateTimeField(null=True, blank=True, editable=False)
-    closed = models.DateTimeField(null=True, blank=True, editable=False)
+    opened = models.DateTimeField(null=True, blank=True)
+    closed = models.DateTimeField(null=True, blank=True)
 
     # Each topic also has a unique identifier. This comes in handy in several
     # use-cases, such as the pad-url.
-    uuid = models.CharField(max_length=36, unique=True, db_index=True, editable=False)
+    uuid = models.CharField(max_length=36, unique=True, db_index=True)
 
     # When formally closing a topic, the etherpad text is persisted into the
     # database.
