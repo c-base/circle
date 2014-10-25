@@ -179,8 +179,11 @@ class Topic(models.Model):
     # ... a creation timestamp...
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
-    # ... and a headline.
+    # ... and a headline...
     headline = models.CharField(max_length=128, db_index=True)
+
+    # ... and a summary.
+    summary = models.TextField()
 
     # Some topics have a god-father member which we'll call the sponsor.
     sponsor = models.ForeignKey(Member, related_name='topic_sponsorships', null=True, blank=True)
