@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractBaseUser, Group
+from django.contrib.auth.models import AbstractBaseUser, Group, UserManager
 from django.db import models
 
 ALIEN_COMPATIBILITY_CHOICES = (
@@ -16,6 +16,8 @@ class Member(AbstractBaseUser):
     groups = models.ManyToManyField(Group, related_name='members', null=True, blank=True)
 
     USERNAME_FIELD = 'crew_name'
+
+    objects = UserManager()
 
     def __str__(self):
         return self.crew_name
