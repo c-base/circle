@@ -329,6 +329,11 @@ class Topic(models.Model):
         self.save()
         return self
 
+    def save(self, *args, **kwargs):
+        super(Topic, self).save(*args, **kwargs)
+        if not self.id and self.summary:
+            self.etherpad_create()
+
 
 class TopicRelation(models.Model):
     class Meta:
