@@ -265,12 +265,11 @@ class Topic(models.Model):
         :raises: RuntimeError           - If pad returns a status-code that is
                                           not zero.
         """
-        default_text = "Schreibe Markdown und halte dich kurz und buendig."
         url = "{}/api/1/createPad?apikey={}&padID={}&text={}".format(
             self.etherpad_config['etherpad_url'],
             self.etherpad_config['etherpad_key'],
             self.etherpad_id,
-            default_text,
+            self.summary,
             )
         response = requests.get(url, verify=False, auth=self.etherpad_config['etherpad_auth'])
 
