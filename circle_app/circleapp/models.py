@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.contrib.auth.models import User
 from managers import CircleManager, TopicManager, ParticipantManager
+from utils import UserMonkeyPatcher
 import uuid
 import requests
 
@@ -63,6 +64,11 @@ def get_etherpad_config():
         'etherpad_url': ETHERPAD_BASE_URL,
         'etherpad_auth': ETHERPAD_AUTH,
     }
+
+
+# Patch the builtin django user model to contain convenience properties.
+setattr(User, 'is_circle_member', UserMonkeyPatcher.is_circle_member)
+setattr(User, 'is_board_member', UserMonkeyPatcher.is_board_member)
 
 
 class Circle(models.Model):
