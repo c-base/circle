@@ -41,6 +41,9 @@ urlpatterns = patterns('',
     url(r'^api/v1/circles/$', 'circleapp.views.circle_list', name="api-circle-list"),
     url(r'^api/v1/circles/(?P<pk>[0-9]+)/$', 'circleapp.views.circle_detail', name="api-circle-detail"),
     url(r'^api/v1/circles/current/$', 'circleapp.views.current_circle_detail', name="api-circle-current-detail"),
+
+    url(r'^api/v1/topics/$', 'circleapp.views.topic_list', name="api-topic-list"),
+    url(r'^api/v1/topics/(?P<pk>[0-9]+)/$', 'circleapp.views.topic_detail', name="api-topic-detail"),
     
     
 
