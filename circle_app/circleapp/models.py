@@ -67,6 +67,8 @@ def get_etherpad_config():
 
 
 # Patch the builtin django user model to contain convenience properties.
+setattr(User, 'is_alien', UserMonkeyPatcher.is_alien)
+setattr(User, 'is_member', UserMonkeyPatcher.is_member)
 setattr(User, 'is_circle_member', UserMonkeyPatcher.is_circle_member)
 setattr(User, 'is_board_member', UserMonkeyPatcher.is_board_member)
 
