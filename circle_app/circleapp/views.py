@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from models import Circle, Topic, Voting, Poll, Member
+from models import Circle, Topic, Voting, Poll
 from django.utils import timezone
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate
 from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render
+from django.contrib.auth.models import User
 
 #from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
@@ -21,7 +22,7 @@ from jsonrpc import jsonrpc_method
 from rest_framework import viewsets
 
 
-from serializers import CircleSerializer
+from serializers import CircleSerializer, TopicSerializer
 
 
 @login_required
@@ -106,7 +107,7 @@ def get_userlist():
         uid_list.append(data.get('_auth_user_id', None))
 
     # Query all logged in users based on id list
-    return Member.objects.filter(id__in=uid_list)
+    return User.objects.filter(id__in=uid_list)
 
 
 # nächster circle wird automatisch angelegt, wenn der aktuelle circle beendet wird.
@@ -146,6 +147,26 @@ class CurrentCircleViewSet(viewsets.ModelViewSet):
 
 
 current_circle_detail = CurrentCircleViewSet.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'patch': 'partial_update',
+    'delete': 'destroy'
+})
+
+
+class TopicViewSet(viewsets.ModelViewSet):
+    """
+    Viewset for api/topic/:id/
+    """
+    queryset = Topic.objects.all()
+    serializer_class = TopicSerializer
+
+topic_list = snippet_list = TopicViewSet.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+topic_detail = TopicViewSet.as_view({
     'get': 'retrieve',
     'put': 'update',
     'patch': 'partial_update',
