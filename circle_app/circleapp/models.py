@@ -149,7 +149,7 @@ class Circle(models.Model):
 
 class Participant(models.Model):
     circle = models.ForeignKey(Circle, related_name='participants')
-    member = models.ForeignKey(User, related_name='participations')
+    user = models.ForeignKey(User, related_name='participations')
     check_in = models.TimeField(null=True, blank=True)
     check_out = models.TimeField(null=True, blank=True)
 
@@ -159,7 +159,7 @@ class Participant(models.Model):
     objects = ParticipantManager()
 
     def __repr__(self):
-        return "{} -> {}".format(self.member.username, self.circle.date or "Upcoming...")
+        return "{} -> {}".format(self.user.username, self.circle.date or "Upcoming...")
 
 
 class Topic(models.Model):

@@ -86,7 +86,7 @@ class ParticipantManager(models.Manager):
         :returns: list      - List of Member() instances.
         """
         circle = circle or self._get_current_circle()
-        return [participation.member for participation in self.get_query_set() if participation.circle == circle]
+        return [participation.user for participation in self.get_query_set() if participation.circle == circle]
 
     def circle_members(self, circle=None):
         """Return all participating circle-members of a circle session.
@@ -95,9 +95,9 @@ class ParticipantManager(models.Manager):
         """
         circle = circle or self._get_current_circle()
         return [
-            participation.member for participation in self.get_query_set()
+            participation.user for participation in self.get_query_set()
             if participation.circle == circle
-            and participation.member.is_circle_member
+            and participation.user.is_circle_member
         ]
 
     def board_members(self, circle=None):
@@ -107,9 +107,9 @@ class ParticipantManager(models.Manager):
         """
         circle = circle or self._get_current_circle()
         return [
-            participation.member for participation in self.get_query_set()
+            participation.user for participation in self.get_query_set()
             if participation.circle == circle
-            and participation.member.is_board_member
+            and participation.user.is_board_member
         ]
 
     def transcript_writers(self, circle=None):
@@ -119,7 +119,7 @@ class ParticipantManager(models.Manager):
         """
         circle = circle or self._get_current_circle()
         return [
-            participation.member for participation in self.get_query_set()
+            participation.user for participation in self.get_query_set()
             if participation.circle == circle
             and participation.role == 'writer'
         ]
