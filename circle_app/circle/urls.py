@@ -22,9 +22,13 @@ urlpatterns = patterns('',
     url(r'^circles$', 'circleapp.views.list_circles', name="list_circles"),
     url(r'^circle/(?P<circle_id>\d{4}-\d{2}-\d{2})$', 'circleapp.views.show_circle', name="show_circle"),
     url(r'^topics$', 'circleapp.views.list_topics', name="list_topics"),
+    url(r'^topic/add$', 'circleapp.views.add_topic', name="add_topic"),
     url(r'^topic/(?P<topic_uuid>.*)/pad$', 'circleapp.views.topic_pad', name="topic_pad"),
     url(r'^topic/(?P<topic_uuid>.*)$', 'circleapp.views.show_topic', name="show_topic"),
     # url(r'^circle/', include('circle.foo.urls')),
+
+    #url(r'^user/select$', 'circleapp.views.select_user', name="select_user"),
+    url(r'^user/select/$', circleapp.views.AddUserFormView.as_view(), name="select_user"),
 
     url(r'^login$', 'circleapp.views.auth_login', name='auth_login'),
     url(r'^logout$', 'circleapp.views.auth_logout', name='auth_logout'),
@@ -43,7 +47,7 @@ urlpatterns = patterns('',
     url(r'^api/v1/circles/current/$', 'circleapp.views.current_circle_detail', name="api-circle-current-detail"),
 
     url(r'^api/v1/topics/$', 'circleapp.views.topic_list', name="api-topic-list"),
-    url(r'^api/v1/topics/(?P<pk>[0-9]+)/$', 'circleapp.views.topic_detail', name="api-topic-detail"),
+    url(r'^api/v1/topics/(?P<uuid>.+)/$', 'circleapp.views.topic_detail', name="api-topic-detail"),
     
     
 
