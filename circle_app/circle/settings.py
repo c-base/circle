@@ -194,6 +194,17 @@ ETHERPAD_API_KEY = ""
 ETHERPAD_BASE_URL = ""
 ETHERPAD_AUTH = "", ""
 
+# ALIEN_PREFIX
+# All c-base members are synced and updated from LDAP each time they login.
+# Thus, there is no need for c-base members to register for an account in the
+# circle-app. However, aliens should be required to create an account before
+# being able to hand in a topic application. The registration should require
+# for a unique e-mail address at minimum, so the circle has a contact in case
+# of any questions. All accounts that have not been synced from LDAP should
+# have their username prefixed with 'alien_', so they are easily identifiable
+# inside the app as well as its outputs.
+ALIEN_PREFIX = 'alien_'
+
 try:
     from settings_local import *
 except ImportError:

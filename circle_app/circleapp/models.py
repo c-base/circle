@@ -67,6 +67,8 @@ def get_etherpad_config():
 
 
 # Patch the builtin django user model to contain convenience properties.
+setattr(User, 'is_alien', UserMonkeyPatcher.is_alien)
+setattr(User, 'is_member', UserMonkeyPatcher.is_member)
 setattr(User, 'is_circle_member', UserMonkeyPatcher.is_circle_member)
 setattr(User, 'is_board_member', UserMonkeyPatcher.is_board_member)
 
@@ -147,7 +149,7 @@ class Circle(models.Model):
 
 class Participant(models.Model):
     circle = models.ForeignKey(Circle, related_name='participants')
-    member = models.ForeignKey(User, related_name='participations')
+    user = models.ForeignKey(User, related_name='participations')
     check_in = models.TimeField(null=True, blank=True)
     check_out = models.TimeField(null=True, blank=True)
 
@@ -157,7 +159,7 @@ class Participant(models.Model):
     objects = ParticipantManager()
 
     def __repr__(self):
-        return "{} -> {}".format(self.member.username, self.circle.date or "Upcoming...")
+        return "{} -> {}".format(self.user.username, self.circle.date or "Upcoming...")
 
 
 class Topic(models.Model):
