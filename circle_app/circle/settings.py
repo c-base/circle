@@ -126,6 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'bootstrap3',
+    'crispy_forms',
     'south',
     'rest_framework',
     'circle',
@@ -147,11 +148,11 @@ AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
 )
 AUTH_LDAP_REQUIRE_GROUP = "cn=crew,ou=groups,dc=c-base,dc=org"
 AUTH_LDAP_GROUP_TYPE = GroupOfNamesType(name_attr="cn")
-AUTH_LDAP_USER_FLAGS_BY_GROUP = {
-    "is_member": "cn=crew,ou=groups,dc=c-base,dc=org",
-    "is_circle_member": "cn=circle,ou=groups,dc=c-base,dc=org",
-    "is_board_member": "cn=vorstand,ou=groups,dc=c-base,dc=org",
-}
+#AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+#    "is_member": "cn=crew,ou=groups,dc=c-base,dc=org",
+#    "is_circle_member": "cn=circle,ou=groups,dc=c-base,dc=org",
+#    "is_board_member": "cn=vorstand,ou=groups,dc=c-base,dc=org",
+#}
 
 AUTHENTICATION_BACKENDS = (
     'django_auth_ldap.backend.LDAPBackend',
