@@ -112,6 +112,19 @@ class ParticipantManager(models.Manager):
             and participation.user.is_board_member
         ]
 
+    def regular_members(self, circle=None):
+        """Return all board-members of a circle session.
+
+        :returns: list      - List of Member() instances.
+        """
+        circle = circle or self._get_current_circle()
+        return [
+            participation.user for participation in self.get_query_set()
+            if participation.circle == circle
+            and not participation.user.is_board_member
+            and not participation.user.is_circle_member
+        ]
+
     def transcript_writers(self, circle=None):
         """Return all transcript writers of a circle session.
 
