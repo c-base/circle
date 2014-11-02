@@ -19,3 +19,7 @@ class LoginForm(forms.Form):
 
     def get_user(self):
         return self.user_cache
+
+class MemberForm(forms.Form):
+    username = forms.CharField(max_length=255)
+
