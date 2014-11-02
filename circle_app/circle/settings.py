@@ -194,6 +194,8 @@ ETHERPAD_API_KEY = ""
 ETHERPAD_BASE_URL = ""
 ETHERPAD_AUTH = "", ""
 
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
 # ALIEN_PREFIX
 # All c-base members are synced and updated from LDAP each time they login.
 # Thus, there is no need for c-base members to register for an account in the
