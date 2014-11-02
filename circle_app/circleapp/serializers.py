@@ -33,6 +33,8 @@ class CircleSerializer(serializers.ModelSerializer):
     board_members = serializers.SerializerMethodField('get_board_members')
     members = serializers.SerializerMethodField('get_members')
     aliens = serializers.SerializerMethodField('get_aliens')
+    moderator = serializers.SerializerMethodField('get_moderator')
+    transcript_writers = serializers.SerializerMethodField('get_transcript_writers')
 
     def get_circle_members(self, obj):
         return obj.participants.circle_members()
@@ -41,7 +43,14 @@ class CircleSerializer(serializers.ModelSerializer):
         return obj.participants.board_members()
 
     def get_members(self, obj):
-        return obj.participants.all()
+        return obj.participants.regular_members()
+
+    def get_moderator(self, obj):
+        return obj.participants.moderator()
+
+    def get_transcript_writers(self, obj):
+        return obj.participants.transcript_writers()
+
 
     def get_aliens(self, obj):
         return []
