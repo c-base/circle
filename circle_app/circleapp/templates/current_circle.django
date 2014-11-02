@@ -5,17 +5,12 @@
 
 <div ng-app="current_circle">
 	<div ng-view ng-controller="BasicController">
-    {$ circle $}
-    Two times <input ng-model="num"> equals {$ double(num) $}
-<!--
-		<span ng-bind="circle"></span>
-    <div ng-repeat="x in circle">
-			<span ng-bind="x"></span>
+    <div ng-repeat="topic in circle.topics">
+			<span ng-bind="topic.headline"></span>
 		</div>
-		<input type="text" ng-model="blafasel" />
--->
 	</div>
 </div>
+<br><br>
 
 <!-- Button trigger modal -->
 <a href="{% url 'select_user' %}" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
