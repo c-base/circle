@@ -4,6 +4,7 @@ django-auth-ldap==1.2.2
 django-bootstrap3==4.11.0
 django-crispy-forms==1.4.0
 django-json-rpc==0.6.1
+django-simple-math-captcha==1.0.5
 djangorestframework==2.4.3
 jsonrpc==1.2
 python-dateutil==2.2
