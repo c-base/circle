@@ -18,7 +18,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.contrib.sessions.models import Session
 from datetime import datetime
 
-from forms import LoginForm, MemberForm
+from forms import *
 
 from jsonrpc import jsonrpc_method
 from rest_framework import viewsets
@@ -75,8 +75,8 @@ def show_topic(request, topic_uuid):
 def topic_pad(request, topic_uuid):
     return HttpResponseRedirect(Topic.objects.get(uuid=topic_uuid).etherpad_link)
 
-def add_topic(request):
-    return render(request, 'edit_topic.django', {})
+#def add_topic(request):
+    #return render(request, 'edit_topic.django', {})
 
 @login_required
 def select_user(request):
@@ -85,6 +85,38 @@ def select_user(request):
 @login_required
 def add_user(request):
     return render(request, 'select_user.django', {})
+
+def add_topic(request):
+    if request.method == "POST":
+        #m = Mission.objects.get(pk=mission_id)
+        if request.user.is_authenticated():
+            form = MemberTopicForm(request.POST)
+        else:
+            form = AlienTopicForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            result = ""
+            c = RequestContext(request, {
+                    'result': result,
+            })
+            c.update(csrf(request))
+            return render(request, 'add_topic.django', c)
+            #return HttpResponseRedirect('/missions/%s' % mission_id)
+    else:
+        if request.user.is_authenticated():
+            form = MemberTopicForm()
+        else:
+            form = AlienTopicForm()
+    return render(request, 'add_topic.django', locals(), context_instance = RequestContext(request))
+
+@login_required
+def add_participant(request, name):
+    user = User.objects.get(username=name)
+    circle = Circle.objects.current()
+    circle.participants.get_or_create(user=user)
+    circle.save()
+    return HttpResponseRedirect('/circle/current')
 
 def auth_login(request):
     redirect_to = request.REQUEST.get('next', '') or '/'

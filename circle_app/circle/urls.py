@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^topic/add$', 'circleapp.views.add_topic', name="add_topic"),
     url(r'^topic/(?P<topic_uuid>.*)/pad$', 'circleapp.views.topic_pad', name="topic_pad"),
     url(r'^topic/(?P<topic_uuid>.*)$', 'circleapp.views.show_topic', name="show_topic"),
+    url(r'^participant/(?P<name>.*)/add$', 'circleapp.views.add_participant', name="add_participant"),
     # url(r'^circle/', include('circle.foo.urls')),
 
     #url(r'^user/select$', 'circleapp.views.select_user', name="select_user"),

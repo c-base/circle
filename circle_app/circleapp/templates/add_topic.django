@@ -1,0 +1,13 @@
+{% extends "base.django" %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+{% crispy form form.helper %}
+
+{% endblock content%}
+
+{% block extra_js %}
+<script src="{{ STATIC_URL }}js/current_circle_app.js" type="text/javascript"></script>
+{% endblock extra_js %}

@@ -5,177 +5,195 @@
 
 <div ng-app="current_circle">
 	<div ng-view ng-controller="BasicController as basic">
+<!--
     <div ng-repeat="topic in basic.circle.topics">
 			<span ng-bind="topic.headline"></span>
 		</div>
     <div ng-repeat="member in basic.circle.board_members">
 			<span ng-bind="member"></span>
 		</div>
-<br><br>
+-->
 
-<!-- Button trigger modal -->
-<a href="{% url 'select_user' %}" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-  Launch demo modal
-</a>
+    <!-- Button trigger modal -->
+    <a href="{% url 'select_user' %}" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+      Launch demo modal
+    </a>
 
-<button id="add-user-button" class="btn btn-large">Or click here!</button>
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<a data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">Click me</a>
-
-<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg"> 
-  <div class="modal-content"> 
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    </div>
-    <div id="form-modal-body" class="modal-body">
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-    </div>
-  </div>
-</div>
-</div>
-
-
-
-
-
-
-<table>
-  <tr><td colspan="2"><h4>circle vom XXXX-xx-xx</h4></td></tr>
-  <tr>
-    <td>
-      <label for="">circlisten:</label>
-    </td>
-    <td>
-      <div id="circle_list">
-        {$ basic.circle.circle_members | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <label for="">member:</label>
-    </td>
-    <td>
-      <div id="member_list">
-        {$ basic.circle.members | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <label for="">vorstand:</label>
-    </td>
-    <td>
-      <div id="board_list">
-        {$ basic.circle.board_members | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <label for="">aliens:</label>
-    </td>
-    <td>
-      <div id="alien_list">
-        {$ basic.circle.aliens | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <label for="">moderator:</label>
-    </td>
-    <td>
-      <div id="moderator">
-        cketti
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <label for="">protokoll:</label>
-    </td>
-    <td>
-      <div id="protocol">
-        xen <button class="btn btn-sm btn-default">+</button>
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <label for="">beginn:</label>
-    </td>
-    <td>
-      <div id="start">
-        -
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <label for="">topics:</label>
-    </td>
-    <td class="col-md-11">
-      <div id="topics">
-        <div id="accordion" class="panel-group">
-          {% for topic in circle.topics.all %}
-              <div class="panel panel-default">
-                  <a class="btn btn-lg btn-default btn-block" data-toggle="collapse" data-parent="#accordion" href="#{{ topic.uuid }}">{{ topic.headline }}</a>
-                  <div id="{{ topic.uuid }}" class="panel-collapse collapse">
-                      <div class="terminal">
-                         <table>
-                             <tr><td>antragsteller:</td><td>{{ topic.applicant }}</td></tr>
-                             <tr><td>eingereicht am:</td><td>{{ topic.created|date:"Y-m-d H:i" }}</td></tr>
-                             <tr>
-                               <td>pate:</td>
-                               <td>
-                                 {% if topic.sponsor %}
-                                   {{ topic.sponsor }}
-                                 {% else %}
-                                   <a href="#" class="btn btn-sm btn-default">auswählen</a>
-                                 {% endif %}
-                               </td>
-                             </tr>
-                             <tr><td colspan="2"><a href="{{ topic.etherpad_link }}" target="_blank">link zum protokoll</a></td></tr>
-                         </table>
-                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/open">eröffnen</a>
-                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/close">schließen</a>
-                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/poll">meinungsbild</a>
-                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/voting">abstimmung</a>
-                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/postpone">verschieben</a>
-                         <a class="btn btn-default" href="/topic/{{ topic.uuid }}/delete">löschen</a>
-                      </div>
-                  </div>
-              </div>
-          {% endfor %}
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+          </div>
+          <div class="modal-body">
+            ...
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
         </div>
       </div>
-    </td>
-  </tr>
-</table>
+    </div>
 
+    <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> 
+      <div class="modal-content"> 
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div id="form-modal-body" class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <table>
+      <tr><td colspan="2"><h4>circle vom XXXX-xx-xx</h4></td></tr>
+      <tr>
+        <td>
+          <label for="">circlisten:</label>
+        </td>
+        <td>
+          <div id="circle_list">
+            {$ basic.circle.circle_members | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">member:</label>
+        </td>
+        <td>
+          <div id="member_list">
+            {$ basic.circle.members | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">vorstand:</label>
+        </td>
+        <td>
+          <div id="board_list">
+            {$ basic.circle.board_members | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">aliens:</label>
+        </td>
+        <td>
+          <div id="alien_list">
+            {$ basic.circle.aliens | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">moderator:</label>
+        </td>
+        <td>
+          <div id="moderator">
+            cketti
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">protokoll:</label>
+        </td>
+        <td>
+          <div id="protocol">
+            xen <button class="btn btn-sm btn-default">+</button>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">beginn:</label>
+        </td>
+        <td>
+          <div id="start">
+            -
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <label for="">topics:</label>
+        </td>
+        <td class="col-md-11">
+          <div id="topics">
+            <div id="accordion" class="panel-group">
+<!--
+              <div ng-repeat="topic in basic.circle.topics">
+                  <div class="panel panel-default">
+                      <a class="btn btn-lg btn-default btn-block" data-toggle="collapse" data-parent="#accordion" href="#{$ topic.uuid $}">{$ topic.headline $}</a>
+                      <div id="{$ topic.uuid $}" class="panel-collapse collapse">
+                          <div class="terminal">
+                             <table>
+                                 <tr><td>antragsteller:</td><td>{$ topic.applicant $}</td></tr>
+                                 <tr><td>eingereicht am:</td><td>{$ topic.created $}</td></tr>
+                                 <tr>
+                                   <td>pate:</td>
+                                   <td>
+                                       {$ topic.sponsor $} <a href="#" class="btn btn-sm btn-default">auswählen</a>
+                                   </td>
+                                 </tr>
+                                 <tr><td colspan="2"><a href="{$ topic.etherpad_link $}" target="_blank">link zum protokoll</a></td></tr>
+                             </table>
+                             <a class="btn btn-default" href="/topic/{$ topic.uuid $}/open">eröffnen</a>
+                             <a class="btn btn-default" href="/topic/{$ topic.uuid $}/close">schließen</a>
+                             <a class="btn btn-default" href="/topic/{$ topic.uuid $}/poll">meinungsbild</a>
+                             <a class="btn btn-default" href="/topic/{$ topic.uuid $}/voting">abstimmung</a>
+                             <a class="btn btn-default" href="/topic/{$ topic.uuid $}/postpone">verschieben</a>
+                             <a class="btn btn-default" href="/topic/{$ topic.uuid $}/delete">löschen</a>
+                          </div>
+                      </div>
+              </div>
+-->
+              {% for topic in circle.topics.all %}
+                  <div class="panel panel-default">
+                      <a class="btn btn-lg btn-default btn-block" data-toggle="collapse" data-parent="#accordion" href="#{{ topic.uuid }}">{{ topic.headline }}</a>
+                      <div id="{{ topic.uuid }}" class="panel-collapse collapse">
+                          <div class="terminal">
+                             <table>
+                                 <tr><td>antragsteller:</td><td>{{ topic.applicant }}</td></tr>
+                                 <tr><td>eingereicht am:</td><td>{{ topic.created|date:"Y-m-d H:i" }}</td></tr>
+                                 <tr>
+                                   <td>pate:</td>
+                                   <td>
+                                     {% if topic.sponsor %}
+                                       {{ topic.sponsor }}
+                                     {% else %}
+                                       <a href="#" class="btn btn-sm btn-default">auswählen</a>
+                                     {% endif %}
+                                   </td>
+                                 </tr>
+                                 <tr><td colspan="2"><a href="{{ topic.etherpad_link }}" target="_blank">link zum protokoll</a></td></tr>
+                             </table>
+                             <a class="btn btn-default" href="/topic/{{ topic.uuid }}/open">eröffnen</a>
+                             <a class="btn btn-default" href="/topic/{{ topic.uuid }}/close">schließen</a>
+                             <a class="btn btn-default" href="/topic/{{ topic.uuid }}/poll">meinungsbild</a>
+                             <a class="btn btn-default" href="/topic/{{ topic.uuid }}/voting">abstimmung</a>
+                             <a class="btn btn-default" data-toggle="modal" data-target="#myModal" href="/topic/{{ topic.uuid }}/postpone">verschieben</a>
+                             <a class="btn btn-danger" data-toggle="modal" data-target="#myModal" href="/topic/{{ topic.uuid }}/delete">löschen</a>
+                          </div>
+                      </div>
+                  </div>
+              {% endfor %}
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
 	</div>
 </div>
 {% endblock content%}

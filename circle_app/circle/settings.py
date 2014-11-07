@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'crispy_forms',
     'south',
+    'ldap_sync',
     'rest_framework',
     'circle',
     'circleapp',
@@ -160,6 +161,10 @@ AUTHENTICATION_BACKENDS = (
 )
 LOGIN_URL = "/login"
 LOGOUT_URL = "/logout"
+
+LDAP_SYNC_URI = "ldap://lea.cbrp3.c-base.org"
+LDAP_SYNC_BASE = "dc=c-base,dc=org"
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
