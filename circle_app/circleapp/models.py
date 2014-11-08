@@ -173,6 +173,9 @@ class Topic(models.Model):
     # ... an applicant...
     applicant = models.ForeignKey(User, related_name='topic_applications', null=True, blank=True)
 
+    # ... possibly a proxy...
+    proxy = models.CharField(max_length=256, null=True, blank=True)
+
     # ... a creation timestamp...
     created = models.DateTimeField(auto_now_add=True)
 
