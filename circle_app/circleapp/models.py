@@ -74,6 +74,7 @@ setattr(User, 'is_board_member', UserMonkeyPatcher.is_board_member)
 
 
 class Circle(models.Model):
+    """Representation of a circle."""
     class Meta:
         ordering = ['-date']
 
@@ -86,6 +87,7 @@ class Circle(models.Model):
     opened = models.DateTimeField(null=True, blank=True)
     closed = models.DateTimeField(null=True, blank=True)
 
+    # Use a custom manager for this model
     objects = CircleManager()
 
     def __str__(self):
@@ -148,14 +150,25 @@ class Circle(models.Model):
 
 
 class Participant(models.Model):
-    circle = models.ForeignKey(Circle, related_name='participants')
+    """Representation of a circle-participant.
+
+    A participant is a user-object attending a circle session.
+    """
+
+    # A specific user...
     user = models.ForeignKey(User, related_name='participations')
+
+    # ... attends a specific circle session.
+    circle = models.ForeignKey(Circle, related_name='participants')
+
+    # Check-in and check-out are formally logged.
     check_in = models.TimeField(null=True, blank=True)
     check_out = models.TimeField(null=True, blank=True)
 
     # Participants may have a special role assigned to them.
     role = models.CharField(max_length=16, choices=CIRCLE_ROLES, null=True, blank=True, default="")
 
+    # Use a custom manager for this model.
     objects = ParticipantManager()
 
     def __repr__(self):
@@ -163,32 +176,38 @@ class Participant(models.Model):
 
 
 class Topic(models.Model):
+    """Representation of a topic."""
+
     class Meta:
         unique_together = ['circle', 'headline']
         ordering = ['created', 'headline']
 
-    # A topic is linked to a circle...
+    # A topic is always linked to a circle. In most cases this will
+    # be the next upcoming circle that is ensured to always be
+    # present in the database, by the Circle model.
     circle = models.ForeignKey(Circle, related_name='topics')
 
-    # ... an applicant...
+    # Every topic has an applicant and may have one or more proxies
+    # who present the topic to the circle.
     applicant = models.ForeignKey(User, related_name='topic_applications', null=True, blank=True)
-
-    # ... possibly a proxy...
     proxy = models.CharField(max_length=256, null=True, blank=True)
 
-    # ... a creation timestamp...
+    # The creation timestamp of a topic is saved for statistical
+    # reasons.
     created = models.DateTimeField(auto_now_add=True)
 
-    # ... and a headline...
+    # The main body of a topic consists of a headline and a shot
+    # summary.
     headline = models.CharField(max_length=128, db_index=True)
-
-    # ... and a summary.
     summary = models.TextField()
 
-    # Some topics have a god-father member which we'll call the sponsor.
+    # Some topics have a god-father member which we'll call the
+    # sponsor. This member acts as communication interface between
+    # the circle and the applicant for further actions and
+    # coordination.
     sponsor = models.ForeignKey(User, related_name='topic_sponsorships', null=True, blank=True)
 
-    # A topic is formally opened and closed.
+    # A topic is formally opened and closed by timestamp.
     opened = models.DateTimeField(null=True, blank=True)
     closed = models.DateTimeField(null=True, blank=True)
 
@@ -200,6 +219,7 @@ class Topic(models.Model):
     # database.
     transcript_protocol = models.TextField(editable=False, default="", null=True, blank=True)
 
+    # Use a custom manager for this model.
     objects = TopicManager()
 
     # Fetch the etherpad config from settings.
@@ -332,11 +352,15 @@ class Topic(models.Model):
 
 
 class TopicRelation(models.Model):
+    """Representation of a relation between two topics."""
     class Meta:
         unique_together = ['topic_from', 'topic_to', 'relation']
 
+    # A specific relation always exists between exactly two topics.
     topic_from = models.ForeignKey(Topic, related_name='relation_from')
     topic_to = models.ForeignKey(Topic, related_name='relation_to')
+
+    # A relation is of a specific human-readable type.
     relation = models.IntegerField(choices=TOPIC_RELATIONS, null=True, blank=True)
 
     def __repr__(self):
@@ -356,13 +380,21 @@ class TopicRelation(models.Model):
 
 
 class Voting(models.Model):
-    # A voting is always connected to one and only one topic...
+    """Representation of a voting.
+
+    Only circle-members can participate in votings.
+    """
+
+    # A voting is always connected to exactly one topic.
     topic = models.OneToOneField(Topic, related_name='voting')
 
-    # ... has a formal proposal...
+    # There is a formal proposal that in most cases differs slightly
+    # from the original topic headline.
     proposal = models.CharField(max_length=1024, db_index=True)
 
-    # ... and a number of votes.
+    # There are three different types of votes which are counted and
+    # in total should sum up to the total number of attending circle
+    # members.
     positive = models.IntegerField()
     negative = models.IntegerField()
     abstentions = models.IntegerField()
@@ -387,13 +419,16 @@ class Voting(models.Model):
 
 
 class Poll(models.Model):
-    # A poll is always connected to one and only one topic...
+    """Representation of a poll.
+
+    All attendees can participate in polls.
+    """
+
+    # A poll is always connected to exactly one topic.
     topic = models.OneToOneField(Topic, related_name='polls')
 
-    # ... has a formal proposal...
+    # It has a formal proposal and outcome.
     proposal = models.CharField(max_length=1024, db_index=True)
-
-    # ... and an outcome.
     outcome = models.CharField(max_length=8, choices=POLL_OUTCOMES)
 
     def __str__(self):
