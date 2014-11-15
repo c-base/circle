@@ -20,8 +20,12 @@ import uuid
 import requests
 
 CIRCLE_ROLES = (
+    ('mod', 'Moderator'),
     ('writer', 'Transcript Writer'),
-    ('mod', 'Moderator')
+    ('board', 'Board Member'),
+    ('circle', 'Circle Member'),
+    ('crew', 'Member'),
+    ('alien', 'Alien'),
 )
 POLL_OUTCOMES = (
     (0, 'Negative'),
@@ -34,6 +38,12 @@ TOPIC_RELATIONS = (
     (2, 'blocked by'),
     (3, 'overrules'),
 )
+COMMITTEES = {
+    'board': 'Board Member',
+    'circle': 'Circle Member',
+    'crew': 'Member',
+    'alien': 'Alien',
+}
 
 
 def get_etherpad_config():
@@ -170,6 +180,21 @@ class Participant(models.Model):
 
     # Use a custom manager for this model.
     objects = ParticipantManager()
+
+    @classmethod
+    def create(cls, *args, **kwargs):
+        """Create a participant while auto-assigning role by group.
+        """
+        participant = cls(*args, **kwargs)
+
+        if 'user' in kwargs:
+            user = kwargs['user']
+
+            for committee in COMMITTEES:
+                if committee in [group.name for group in user.groups.all()]:
+                    participant.role = committee
+
+        return participant
 
     def __repr__(self):
         return "{} -> {}".format(self.user.username, self.circle.date or "Upcoming...")
