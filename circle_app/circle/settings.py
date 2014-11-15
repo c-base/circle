@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'autocomplete_light',
     'django.contrib.admin',
     'bootstrap3',
     'crispy_forms',
@@ -198,6 +199,9 @@ LOGGING = {
 ETHERPAD_API_KEY = ""
 ETHERPAD_BASE_URL = ""
 ETHERPAD_AUTH = "", ""
+
+CBASE_LDAP_URL = 'ldap://lea.cbrp3.c-base.org:389/'
+CBASE_BASE_DN = 'ou=crew,dc=c-base,dc=org'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 

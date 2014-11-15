@@ -15,10 +15,11 @@
 -->
 
     <!-- Button trigger modal -->
+<!--
     <a href="{% url 'select_user' %}" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
       Launch demo modal
     </a>
-
+-->
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
@@ -53,15 +54,32 @@
     </div>
     </div>
 
+
     <table>
       <tr><td colspan="2"><h4>circle vom XXXX-xx-xx</h4></td></tr>
+      <tr>
+        <td>anwesende:</td>
+        <td>
+          <form action="/user/add" method="POST" class="">
+            <input id="PersonChoice" name="PersonChoice" class="textwidget form-control autocomplete-light-text-widget" data-autocomplete-choice-selector="[data-value]" data-autocomplete-placeholder="Type some text to search in this autocomplete" data-autocomplete-url="/autocomplete/PersonAutocomplete/" data-bootstrap="normal" type="text" autocomplete="off" placeholder="Type some text to search in this autocomplete">
+            <select class="form-control" name="PersonRole" id="PersonRole">
+             <option value="member">member</option>
+             <option value="board">board</option>
+             <option value="circle">circle</option>
+             <option value="alien">alien</option>
+             <option value="excused">excused</option>
+            </select>
+            <input type="submit" class="form-control">
+          </form>
+        </td>
+      </tr>
       <tr>
         <td>
           <label for="">circlisten:</label>
         </td>
         <td>
           <div id="circle_list">
-            {$ basic.circle.circle_members | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
+            {$ basic.circle.circle_members | joinBy:',' $}
           </div>
         </td>
       </tr>
@@ -71,7 +89,7 @@
         </td>
         <td>
           <div id="member_list">
-            {$ basic.circle.members | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
+            {$ basic.circle.members | joinBy:',' $}
           </div>
         </td>
       </tr>
@@ -81,7 +99,7 @@
         </td>
         <td>
           <div id="board_list">
-            {$ basic.circle.board_members | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
+            {$ basic.circle.board_members | joinBy:',' $}
           </div>
         </td>
       </tr>
@@ -91,7 +109,7 @@
         </td>
         <td>
           <div id="alien_list">
-            {$ basic.circle.aliens | joinBy:',' $} <a class="btn btn-sm btn-default" data-toggle="modal" href="{% url 'list_topics' %}" data-target="#form-modal">+</a>
+            {$ basic.circle.aliens | joinBy:',' $}
           </div>
         </td>
       </tr>
@@ -201,4 +219,14 @@
 {% block extra_js %}
 <script src="{{ STATIC_URL }}js/current_circle_app.js" type="text/javascript"></script>
 <script src="http://malsup.github.com/jquery.form.js"></script> 
+<script>
+  $("#PersonChoice").yourlabsAutocomplete();
+  $("#PersonChoice").bind("selectChoice", function(e, choice, autocomplete) { 
+    $('#PersonChoice').val(choice.attr("data-value")); 
+    $('#PersonRole').val(choice.attr("data-role"));
+    //$('[name=PersonRole]').val(choice.attr("data-role"));
+    
+  });
+</script>
+
 {% endblock extra_js %}

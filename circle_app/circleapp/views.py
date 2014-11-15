@@ -13,6 +13,7 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.views.generic import FormView, TemplateView
 from django.core.urlresolvers import reverse_lazy
+from django.core.context_processors import csrf
 
 #from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
@@ -23,8 +24,11 @@ from forms import *
 from jsonrpc import jsonrpc_method
 from rest_framework import viewsets
 
+import circle.settings as settings
 
 from serializers import CircleSerializer, TopicSerializer
+
+import ldap
 
 
 @login_required
@@ -45,7 +49,7 @@ def end_circle(request):
 @login_required
 def current_circle(request):
     circle = Circle.objects.current()
-    return render(request, 'current_circle.django', {'circle': circle})
+    return render(request, 'current_circle.django', {'circle': circle, 'userlist': list_users()})
 
 
 @login_required
@@ -99,6 +103,7 @@ def add_topic(request):
             result = ""
             c = RequestContext(request, {
                     'result': result,
+                    'form': form,
             })
             c.update(csrf(request))
             return render(request, 'add_topic.django', c)
@@ -152,6 +157,30 @@ def get_userlist():
     # Query all logged in users based on id list
     return User.objects.filter(id__in=uid_list)
 
+def list_users():
+    """
+    Returns a list of strings with all usernames in the group 'crew'.
+    The list is sorted alphabetically.
+    """
+    l = ldap.initialize(settings.CBASE_LDAP_URL)
+    l.simple_bind_s()
+    try:
+        result_id = l.search(settings.CBASE_BASE_DN, ldap.SCOPE_SUBTREE,
+                "memberOf=cn=crew,ou=groups,dc=c-base,dc=org", None)
+        result_set = []
+        while True:
+            result_type, result_data = l.result(result_id, 0)
+            if (result_data == []):
+                break
+            else:
+                if result_type == ldap.RES_SEARCH_ENTRY:
+                    result_set.append(result_data)
+
+        # list comprehension to get a list of user tupels in the format ("nickname", "nickname (real name)")
+        users = [(x[0][1]['uid'][0], '%s (%s)' % (x[0][1]['uid'][0], x[0][1]['cn'][0])) for x in result_set]
+        return sorted(users)
+    except:
+        return []
 
 # nächster circle wird automatisch angelegt, wenn der aktuelle circle beendet wird.
 # alle topics, die keinem circle zugordnet sind, werden automatisch dem neuen circle zugeordnet

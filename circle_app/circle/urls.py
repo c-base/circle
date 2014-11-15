@@ -1,12 +1,14 @@
+from jsonrpc import jsonrpc_site
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.conf.urls.static import static
-from jsonrpc import jsonrpc_site
 
 import circleapp.views
+import autocomplete_light
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+autocomplete_light.autodiscover()
 admin.autodiscover()
 
 from circleapp.views import CircleViewSet
@@ -49,6 +51,7 @@ urlpatterns = patterns('',
 
     url(r'^api/v1/topics/$', 'circleapp.views.topic_list', name="api-topic-list"),
     url(r'^api/v1/topics/(?P<uuid>.+)/$', 'circleapp.views.topic_detail', name="api-topic-detail"),
+    url(r'^autocomplete/', include('autocomplete_light.urls')),
     
     
 
