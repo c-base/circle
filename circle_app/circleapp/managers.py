@@ -109,7 +109,7 @@ class ParticipantManager(models.Manager):
         return [
             participation.user for participation in self.get_query_set()
             if participation.circle == circle
-            and participation.user.is_board_member
+            and participation.role == 'board'
         ]
 
     def regular_members(self, circle=None):
@@ -122,7 +122,7 @@ class ParticipantManager(models.Manager):
             participation.user for participation in self.get_query_set()
             if participation.circle == circle
             and not participation.user.is_board_member
-            and not participation.user.is_circle_member
+            and not participation.role == 'circle'
         ]
 
     def transcript_writers(self, circle=None):
