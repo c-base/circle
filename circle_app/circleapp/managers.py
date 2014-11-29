@@ -121,7 +121,6 @@ class ParticipantManager(models.Manager):
         return [
             participation.user for participation in self.get_query_set()
             if participation.circle == circle
-            and not participation.user.is_board_member
             and not participation.role == 'circle'
         ]
 
