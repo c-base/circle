@@ -182,16 +182,17 @@ class Participant(models.Model):
     objects = ParticipantManager()
 
     @classmethod
-    def create(cls, user_model, circle_model=None):
+    def create(cls, user_model, circle_model=None, **kwargs):
         """Create a participant while auto-assigning role by group.
 
-        :param user_model: object    - The user account of the participant.
+        :param user_model: object   - The user account of the participant.
+        :param kwargs               - kwargs passed to Participant.__init__
         :returns: object            - Instance of participant.
         """
         if circle_model is None:
             circle_model = Circle.objects.current()
 
-        return Participant(user=user_model, circle=circle_model)
+        return Participant(user=user_model, circle=circle_model, **kwargs)
 
     def __repr__(self):
         return "{} -> {}".format(self.user.username, self.circle.date or "Upcoming...")
