@@ -195,7 +195,7 @@ class Participant(models.Model):
         return Participant(user=user_model, circle=circle_model, **kwargs)
 
     def __repr__(self):
-        return "{} -> {}".format(self.user.username, self.circle.date or "Upcoming...")
+        return "{} -> {}".format(self.user.username, self.role)
 
 
 class Topic(models.Model):
